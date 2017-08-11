@@ -1,0 +1,9 @@
+.MassiliaJudo_Gender{
+
+}
+
+.MassiliaJudo_Firstname .error{
+    border: red solid 1px;
+    background-color: #cd5a5a;
+    color: black;
+}
