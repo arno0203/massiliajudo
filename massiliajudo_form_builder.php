@@ -68,8 +68,8 @@ class MassiliaJudo_Form_Builder
      * @param string $class
      * @return string
      */
-    public static function buildDate($value = '', $idElement = null, $label = '', $class =''){
-        return self::buildText($value, $idElement, $label, '25/12/2000', $class);
+    public static function buildDate($name = '', $value = '', $idElement = null, $label = '', $class =''){
+        return self::buildText($name, $value, $idElement, $label, '25/12/2000', $class);
     }
 
     /**

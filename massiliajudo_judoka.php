@@ -78,13 +78,14 @@ class MassiliaJudo_Judoka
 , birthdayDate DATETIME NOT NULL
 , userId BIGINT(20) NOT NULL
 , genderId INT(10) NOT NULL
-, dojoId INT(10) NOT NULL);"
+, dojoId INT(10) NOT NULL
+, actif SMALLINT NOT NULL DEFAULT 1);"
         );
 
         $wpdb->query(
                 "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}massiliajudo_dojo (id INT AUTO_INCREMENT PRIMARY KEY
 , name VARCHAR(255) NOT NULL
-, actif SMALLINT NOT 1 
+, actif SMALLINT NOT NULL DEFAULT 1 
 , order SMALLINT NULL );"
         );
         $wpdb->query(
@@ -109,5 +110,37 @@ class MassiliaJudo_Judoka
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}massiliajudo_judoka;");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}massiliajudo_dojo;");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}massiliajudo_gender;");
+    }
+
+    /**
+     * @param $datas
+     * @return array
+     */
+    public static function formatDatasToDb($datas){
+        $ret = [];
+
+        $ret = array_merge($datas);
+        if(!empty($datas['MassiliaJudo_Firstname']) ){
+            $ret['MassiliaJudo_Firstname'] = ucwords($datas['MassiliaJudo_Firstname']);
+        }
+        if(!empty($datas['MassiliaJudo_Lastname']) ){
+            $ret['MassiliaJudo_Lastname'] = mb_strtoupper(MassiliaJudo_Myaccount::wd_remove_accents($datas['MassiliaJudo_Lastname']));
+        }
+        $date = DateTime::createFromFormat('d/m/Y',  $datas['MassiliaJudo_Birthday']);
+        $ret['MassiliaJudo_Birthday'] = $date->format('Y-m-d');
+        return $ret;
+    }
+
+
+    /**
+     * @param $data
+     * @return mixed
+     */
+    public static function formatDataToForm($data){
+        $ret = clone $data;
+        $date = new DateTime($ret->birthdayDate);
+        $ret->birthdayDate = $date->format('d/m/Y');
+
+        return $ret;
     }
 }
