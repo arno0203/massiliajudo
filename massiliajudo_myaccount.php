@@ -146,7 +146,7 @@ class MassiliaJudo_Myaccount
         $current_user = wp_get_current_user();
         $genderId = $dojoId = $firstName = $lastName = $email = $birthday = '';
 
-        if (!is_null($judokaId)) {
+        if (!empty($judokaId)) {
             if (MassiliaJudo_Judoka_DB::isMyJodoka($current_user->ID, $judokaId)) {
                 $datas = MassiliaJudo_Judoka::formatDataToForm(MassiliaJudo_Judoka_DB::getJudokasById($judokaId));
 
@@ -269,12 +269,12 @@ class MassiliaJudo_Myaccount
                 } else {
                     $datas = MassiliaJudo_Judoka::formatDatasToDb($_POST);
 
-                    if (is_null($_POST['MassiliaJudo_JudokaId'])) {
+                    if (empty($_POST['MassiliaJudo_JudokaId'])) {
                         $judoka_id = MassiliaJudo_Judoka_DB::saveJudoka($datas);
                     } else {
                         MassiliaJudo_Judoka_DB::updateJudoka($datas);
                     }
-                    wp_redirect(home_url('/my-account/judokas/'));
+                    wp_redirect(get_permalink(get_option('woocommerce_myaccount_page_id')).'/judokas/');
                     exit;
                 }
             }
@@ -339,7 +339,7 @@ HTML;
 
             if (wp_verify_nonce($_POST['massiliajudo_deljudoka'], 'MassiliaJudo')) {
                 if (MassiliaJudo_Judoka_DB::delJudoka($_POST['MassiliaJudo_JudokaId'])) {
-                    wp_redirect(home_url('/my-account/judokas/'));
+                    wp_redirect(get_permalink(get_option('woocommerce_myaccount_page_id')).'/judokas/');
                     exit;
                 }
             }
@@ -384,7 +384,7 @@ HTML;
     public function massilia_judokas_endpoint_content()
     {
         $judokas = MassiliaJudo_Judoka_DB::getJudokasByUserId();
-       
+
         $nbrJudoka = count($judokas);
         if ($nbrJudoka == 0) {
             $string = <<<STRING
@@ -504,7 +504,7 @@ STRING;
         $current_user = wp_get_current_user();
         $genderId = $firstName = $lastName = $email = $phoneNumber = $address = $city = $cp = $status = '';
 
-        if (!is_null($contactId)) {
+        if (!empty($contactId)) {
             if (MassiliaJudo_Contact_DB::isMyContact($current_user->ID, $contactId)) {
                 $datas = MassiliaJudo_Contact::formatDataToForm(MassiliaJudo_Contact_DB::getContactsById($contactId));
 
@@ -519,85 +519,86 @@ STRING;
                 $status = $datas->status;
 
             }
+        }
 
-            $genderSelect = MassiliaJudo_Form_Builder::buildSelect(
-                'MassiliaJudo_Gender_DB',
-                'MassiliaJudo_Gender',
-                $genderId,
-                'MassiliaJudo_Gender',
-                'Genre'
-            );
+        $genderSelect = MassiliaJudo_Form_Builder::buildSelect(
+            'MassiliaJudo_Gender_DB',
+            'MassiliaJudo_Gender',
+            $genderId,
+            'MassiliaJudo_Gender',
+            'Genre'
+        );
 
-            $firstNameText = MassiliaJudo_Form_Builder::buildText(
-                'MassiliaJudo_Firstname',
-                $firstName,
-                'MassiliaJudo_Firstname',
-                'Prénom',
-                'Rentrez le prénom du contact',
-                'error'
-            );
-            $lastNameText = MassiliaJudo_Form_Builder::buildText(
-                'MassiliaJudo_Lastname',
-                $lastName,
-                'MassiliaJudo_Lastname',
-                'Nom',
-                'Rentrez le nom du contact'
-            );
-            $emailText = MassiliaJudo_Form_Builder::buildText(
-                'MassiliaJudo_Email',
-                $email,
-                'MassiliaJudo_Email',
-                'Email',
-                'Rentrez l\'email du contact'
-            );
-            $phoneNumberText = MassiliaJudo_Form_Builder::buildPhoneNumber(
-                'MassiliaJudo_PhoneNumber',
-                $phoneNumber,
-                'MassiliaJudo_PhoneNumber',
-                'Numéro de téléphone portable'
-            );
-            $addressText = MassiliaJudo_Form_Builder::buildText(
-                'MassiliaJudo_Address',
-                $address,
-                'MassiliaJudo_Address',
-                'Adresse',
-                'Saisissez l\'adresse postale'
-            );
-            $cityText = MassiliaJudo_Form_Builder::buildText(
-                'MassiliaJudo_City',
-                $city,
-                'MassiliaJudo_City',
-                'Ville',
-                'Saisissez la ville'
-            );
-            $cpText = MassiliaJudo_Form_Builder::buildText(
-                'MassiliaJudo_Cp',
-                $cp,
-                'MassiliaJudo_Cp',
-                'Code postal',
-                'Saisissez le code postal'
-            );
-            $statutText = MassiliaJudo_Form_Builder::buildText(
-                'MassiliaJudo_Status',
-                $status,
-                'MassiliaJudo_Status',
-                'Statut',
-                'Saisissez votre statut (père, mère, beau-père, belle-mère, autre)'
-            );
-            $submit = MassiliaJudo_Form_Builder::buildSubmit('submit_edit_contact', 'MassiliaJudo_Submit', 'Validez');
-            $userIdHidden = MassiliaJudo_Form_Builder::buildHidden(
-                'MassiliaJudo_UserId',
-                'MassiliaJudo_UserId',
-                $current_user->ID
-            );
+        $firstNameText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Firstname',
+            $firstName,
+            'MassiliaJudo_Firstname',
+            'Prénom',
+            'Rentrez le prénom du contact',
+            'error'
+        );
+        $lastNameText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Lastname',
+            $lastName,
+            'MassiliaJudo_Lastname',
+            'Nom',
+            'Rentrez le nom du contact'
+        );
+        $emailText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Email',
+            $email,
+            'MassiliaJudo_Email',
+            'Email',
+            'Rentrez l\'email du contact'
+        );
+        $phoneNumberText = MassiliaJudo_Form_Builder::buildPhoneNumber(
+            'MassiliaJudo_PhoneNumber',
+            $phoneNumber,
+            'MassiliaJudo_PhoneNumber',
+            'Numéro de téléphone portable'
+        );
+        $addressText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Address',
+            $address,
+            'MassiliaJudo_Address',
+            'Adresse',
+            'Saisissez l\'adresse postale'
+        );
+        $cityText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_City',
+            $city,
+            'MassiliaJudo_City',
+            'Ville',
+            'Saisissez la ville'
+        );
+        $cpText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Cp',
+            $cp,
+            'MassiliaJudo_Cp',
+            'Code postal',
+            'Saisissez le code postal'
+        );
+        $statutText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Status',
+            $status,
+            'MassiliaJudo_Status',
+            'Statut',
+            'Saisissez votre statut (père, mère, beau-père, belle-mère, autre)'
+        );
+        $submit = MassiliaJudo_Form_Builder::buildSubmit('submit_edit_contact', 'MassiliaJudo_Submit', 'Validez');
+        $userIdHidden = MassiliaJudo_Form_Builder::buildHidden(
+            'MassiliaJudo_UserId',
+            'MassiliaJudo_UserId',
+            $current_user->ID
+        );
 
-            $contactIdHidden = MassiliaJudo_Form_Builder::buildHidden(
-                'MassiliaJudo_ContactId',
-                'MassiliaJudo_ContactId',
-                $contactId
-            );
+        $contactIdHidden = MassiliaJudo_Form_Builder::buildHidden(
+            'MassiliaJudo_ContactId',
+            'MassiliaJudo_ContactId',
+            $contactId
+        );
 
-            $html = '<form action="#" method="POST" class="">%s
+        $html = '<form action="#" method="POST" class="">%s
     <p>
 	    %s
 	</p>
@@ -627,24 +628,24 @@ STRING;
 	</span>
 </form>';
 
-            echo sprintf(
-                $html,
-                wp_nonce_field('MassiliaJudo', 'massiliajudo_editcontact', true, false),
-                $genderSelect,
-                $firstNameText,
-                $lastNameText,
-                $emailText,
-                $phoneNumberText,
-                $addressText,
-                $cityText,
-                $cpText,
-                $statutText,
-                $submit,
-                $userIdHidden,
-                $contactIdHidden
-            );
+        echo sprintf(
+            $html,
+            wp_nonce_field('MassiliaJudo', 'massiliajudo_editcontact', true, false),
+            $genderSelect,
+            $firstNameText,
+            $lastNameText,
+            $emailText,
+            $phoneNumberText,
+            $addressText,
+            $cityText,
+            $cpText,
+            $statutText,
+            $submit,
+            $userIdHidden,
+            $contactIdHidden
+        );
 
-        }
+        
     }
 
     /**
@@ -664,7 +665,7 @@ STRING;
                     } else {
                         MassiliaJudo_Contact_DB::updateContact($datas);
                     }
-                    wp_redirect(home_url('/my-account/contacts/'));
+                    wp_redirect(get_permalink(get_option('woocommerce_myaccount_page_id')).'/contacts/');
                     exit;
                 }
             }
@@ -701,7 +702,11 @@ HTML;
                 'MassiliaJudo_ContactId',
                 $contactId
             );
-            $cancel = MassiliaJudo_Form_Builder::buildSubmit('cancel_del_contact', 'MassiliaJudo_Cancel_Del', 'Annulez');
+            $cancel = MassiliaJudo_Form_Builder::buildSubmit(
+                'cancel_del_contact',
+                'MassiliaJudo_Cancel_Del',
+                'Annulez'
+            );
             $submit = MassiliaJudo_Form_Builder::buildSubmit(
                 'submit_del_contact',
                 'MassiliaJudo_Submit_Del',
@@ -726,7 +731,7 @@ HTML;
 
             if (wp_verify_nonce($_POST['massiliajudo_delcontact'], 'MassiliaJudo')) {
                 if (MassiliaJudo_Contact_DB::delContact($_POST['MassiliaJudo_ContactId'])) {
-                    wp_redirect(home_url('/my-account/contacts/'));
+                    wp_redirect(get_permalink(get_option('woocommerce_myaccount_page_id')).'/contacts/');
                     exit;
                 }
             }

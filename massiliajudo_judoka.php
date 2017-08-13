@@ -72,33 +72,33 @@ class MassiliaJudo_Judoka
 
         $wpdb->query(
             "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}massiliajudo_judoka (id INT AUTO_INCREMENT PRIMARY KEY
-, lastname VARCHAR(255) NOT NULL
-, firstname VARCHAR(255) NOT NULL 
-, email VARCHAR(255) NULL 
-, birthdayDate DATETIME NOT NULL
-, userId BIGINT(20) NOT NULL
-, genderId INT(10) NOT NULL
-, dojoId INT(10) NOT NULL
-, actif SMALLINT NOT NULL DEFAULT 1);"
+, `lastname` VARCHAR(255) NOT NULL
+, `firstname` VARCHAR(255) NOT NULL 
+, `email` VARCHAR(255) NULL 
+, `birthdayDate` DATETIME NOT NULL
+, `userId` BIGINT(20) NOT NULL
+, `genderId` INT(10) NOT NULL
+, `dojoId` INT(10) NOT NULL
+, `actif` SMALLINT NOT NULL DEFAULT 1);"
         );
 
         $wpdb->query(
-                "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}massiliajudo_dojo (id INT AUTO_INCREMENT PRIMARY KEY
-, name VARCHAR(255) NOT NULL
-, actif SMALLINT NOT NULL DEFAULT 1 
-, order SMALLINT NULL );"
+                "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}massiliajudo_dojo (`id` INT AUTO_INCREMENT PRIMARY KEY
+, `name` VARCHAR(255) NOT NULL
+, `actif` SMALLINT(1) NOT NULL DEFAULT 1 
+, `order` SMALLINT(1) NULL );"
         );
         $wpdb->query(
-            "INSERT INTO {$wpdb->prefix}massiliajudo_gender (name, actif, order) VALUES 
+            "INSERT INTO {$wpdb->prefix}massiliajudo_dojo (`name`, `actif`, `order`) VALUES 
               ('Saint Jérôme', 1,1), ('Saint Barnabé', 1, 2), ('La Pauline', 1, 3), ('Pélabon',0,4), ('La Visitation', 0, 5)"
         );
 
         $wpdb->query(
-            "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}massiliajudo_gender (id INT AUTO_INCREMENT PRIMARY KEY
-, name VARCHAR(255) NOT NULL );"
+            "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}massiliajudo_gender (`id` INT AUTO_INCREMENT PRIMARY KEY
+, `name` VARCHAR(255) NOT NULL );"
         );
         $wpdb->query(
-                "INSERT INTO {$wpdb->prefix}massiliajudo_gender (name) VALUES ('Homme'), ('Femme')"
+                "INSERT INTO {$wpdb->prefix}massiliajudo_gender (`name`) VALUES ('Homme'), ('Femme')"
         );
 
     }
