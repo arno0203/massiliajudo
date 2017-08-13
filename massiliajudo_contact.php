@@ -50,7 +50,9 @@ class MassiliaJudo_Contact
 , city VARCHAR(255) NOT NULL
 , cp VARCHAR(5) NOT NULL 
 , status VARCHAR(15) NOT NULL
-, genderId INT(10) NOT NULL);"
+, userId BIGINT(20) NOT NULL
+, genderId INT(10) NOT NULL
+, actif SMALLINT NOT NULL DEFAULT 1);"
         );
     }
 
@@ -59,5 +61,35 @@ class MassiliaJudo_Contact
         global $wpdb;
 
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}massiliajudo_contact;");
+    }
+
+    /**
+     * @param $datas
+     * @return array
+     */
+    public static function formatDatasToDb($datas){
+        $ret = [];
+
+        $ret = array_merge($datas);
+        if(!empty($datas['MassiliaJudo_Firstname']) ){
+            $ret['MassiliaJudo_Firstname'] = ucwords($datas['MassiliaJudo_Firstname']);
+        }
+        if(!empty($datas['MassiliaJudo_Lastname']) ){
+            $ret['MassiliaJudo_Lastname'] = mb_strtoupper(MassiliaJudo_Myaccount::wd_remove_accents($datas['MassiliaJudo_Lastname']));
+        }
+        $ret['MassiliaJudo_Address'] = addslashes( $ret['MassiliaJudo_Address']);
+        return $ret;
+    }
+
+
+    /**
+     * @param $data
+     * @return mixed
+     */
+    public static function formatDataToForm($data){
+        $ret = clone $data;
+        $ret->address = stripslashes($ret->address);
+
+        return $ret;
     }
 }

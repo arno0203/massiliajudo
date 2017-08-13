@@ -31,6 +31,8 @@ class MassiliaJudo_Plugin{
 
         include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_judoka_db.php';
 
+        include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_contact_db.php';
+
         include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_gender_db.php';
 
         include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_dojo_db.php';
