@@ -164,14 +164,18 @@ class MassiliaJudo_Myaccount
             'MassiliaJudo_Gender',
             $genderId,
             'MassiliaJudo_Gender',
-            'Genre'
+            'Genre',
+            'woocommerce-Input select select2',
+            true
         );
         $dojoSelect = MassiliaJudo_Form_Builder::buildSelect(
             'MassiliaJudo_Dojo_DB',
             'MassiliaJudo_Dojo',
             $dojoId,
             'MassiliaJudo_Dojo',
-            'Dojo'
+            'Dojo',
+            'woocommerce-Input select select2',
+            true
         );
         $firstNameText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Firstname',
@@ -179,30 +183,42 @@ class MassiliaJudo_Myaccount
             'MassiliaJudo_Firstname',
             'Prénom',
             'Rentrez le prénom du judoka',
-            'error'
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
         );
         $lastNameText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Lastname',
             $lastName,
             'MassiliaJudo_Lastname',
             'Nom',
-            'Rentrez le nom du judoka'
+            'Rentrez le nom du judoka',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
         );
         $emailText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Email',
             $email,
             'MassiliaJudo_Email',
             'Email',
-            'Rentrez l\'email du judoka'
+            'Rentrez l\'email du judoka',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
         );
         $birthdayDate = MassiliaJudo_Form_Builder::buildDate(
             'MassiliaJudo_Birthday',
             $birthday,
             'MassiliaJudo_Birthday',
-            'Date d\'anniversaire',
-            'Date de naissance'
+            'Date de naissance',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
         );
-        $submit = MassiliaJudo_Form_Builder::buildSubmit('submit_edit_judoka', 'MassiliaJudo_Submit', 'Validez');
+        $submit = MassiliaJudo_Form_Builder::buildSubmit(
+            'submit_edit_judoka',
+            'MassiliaJudo_Submit',
+            'Enregistrez',
+            'woocommerce-Button button'
+        );
+
         $contactHidden = MassiliaJudo_Form_Builder::buildHidden(
             'MassiliaJudo_ContactId',
             'MassiliaJudo_ContactId',
@@ -215,41 +231,33 @@ class MassiliaJudo_Myaccount
             $judokaId
         );
 
-        $html = '<form action="#" method="POST" class="">%s
-    <p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
-	<span>
-	    %s%s
-	</span>
+        $html = '<form action="#" method="POST" class="woocommerce-EditAccountForm edit-account">%s
+<!-- gender -->
+<div class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">%s</div>
+<!-- dojo -->
+<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last">%s</div>
+<!-- firstname -->
+<div class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">%s</div>
+<!-- lastname -->
+<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last">%s</div>
+<!-- email -->
+<div class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">%s</div>
+<!-- birthdat -->
+<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last">%s</div>
+<!-- submit -->
+<p class="pull-right">%s</p>
+<!-- hidden contactId / judokaId -->
+<span>%s%s</span>
 </form>';
 
         echo sprintf(
             $html,
             wp_nonce_field('MassiliaJudo', 'massiliajudo_editjudoka', true, false),
             $genderSelect,
+            $dojoSelect,
             $firstNameText,
             $lastNameText,
             $emailText,
-            $dojoSelect,
             $birthdayDate,
             $submit,
             $contactHidden,
@@ -529,63 +537,93 @@ STRING;
             'Genre'
         );
 
-        $firstNameText = MassiliaJudo_Form_Builder::buildText(
-            'MassiliaJudo_Firstname',
-            $firstName,
-            'MassiliaJudo_Firstname',
-            'Prénom',
-            'Rentrez le prénom du contact',
-            'error'
-        );
-        $lastNameText = MassiliaJudo_Form_Builder::buildText(
-            'MassiliaJudo_Lastname',
-            $lastName,
-            'MassiliaJudo_Lastname',
-            'Nom',
-            'Rentrez le nom du contact'
-        );
-        $emailText = MassiliaJudo_Form_Builder::buildText(
-            'MassiliaJudo_Email',
-            $email,
-            'MassiliaJudo_Email',
-            'Email',
-            'Rentrez l\'email du contact'
-        );
-        $phoneNumberText = MassiliaJudo_Form_Builder::buildPhoneNumber(
-            'MassiliaJudo_PhoneNumber',
-            $phoneNumber,
-            'MassiliaJudo_PhoneNumber',
-            'Numéro de téléphone portable'
-        );
-        $addressText = MassiliaJudo_Form_Builder::buildText(
-            'MassiliaJudo_Address',
-            $address,
-            'MassiliaJudo_Address',
-            'Adresse',
-            'Saisissez l\'adresse postale'
-        );
-        $cityText = MassiliaJudo_Form_Builder::buildText(
-            'MassiliaJudo_City',
-            $city,
-            'MassiliaJudo_City',
-            'Ville',
-            'Saisissez la ville'
-        );
-        $cpText = MassiliaJudo_Form_Builder::buildText(
-            'MassiliaJudo_Cp',
-            $cp,
-            'MassiliaJudo_Cp',
-            'Code postal',
-            'Saisissez le code postal'
+        $statusSelect = MassiliaJudo_Form_Builder::buildSelect(
+            'MassiliaJudo_Status_DB',
+            'MassiliaJudo_Status',
+            $genderId,
+            'MassiliaJudo_Status',
+            'Statut'
         );
         $statutText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Status',
             $status,
             'MassiliaJudo_Status',
             'Statut',
-            'Saisissez votre statut (père, mère, beau-père, belle-mère, autre)'
+            'Saisissez votre statut (père, mère, beau-père, belle-mère, autre)',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
         );
-        $submit = MassiliaJudo_Form_Builder::buildSubmit('submit_edit_contact', 'MassiliaJudo_Submit', 'Validez');
+
+        $firstNameText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Firstname',
+            $firstName,
+            'MassiliaJudo_Firstname',
+            'Prénom',
+            'Rentrez le prénom du contact',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
+        );
+        $lastNameText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Lastname',
+            $lastName,
+            'MassiliaJudo_Lastname',
+            'Nom',
+            'Rentrez le nom du contact',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
+        );
+        $emailText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Email',
+            $email,
+            'MassiliaJudo_Email',
+            'Email',
+            'Rentrez l\'email du contact',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
+        );
+        $phoneNumberText = MassiliaJudo_Form_Builder::buildPhoneNumber(
+            'MassiliaJudo_PhoneNumber',
+            $phoneNumber,
+            'MassiliaJudo_PhoneNumber',
+            'Numéro de téléphone portable',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
+        );
+        $addressText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Address',
+            $address,
+            'MassiliaJudo_Address',
+            'Adresse',
+            'Saisissez l\'adresse postale',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
+        );
+        $cityText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_City',
+            $city,
+            'MassiliaJudo_City',
+            'Ville',
+            'Saisissez la ville',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
+        );
+        $cpText = MassiliaJudo_Form_Builder::buildText(
+            'MassiliaJudo_Cp',
+            $cp,
+            'MassiliaJudo_Cp',
+            'Code postal',
+            'Saisissez le code postal',
+            'woocommerce-Input woocommerce-Input--text input-text',
+            true
+        );
+
+        $submit = MassiliaJudo_Form_Builder::buildSubmit(
+            'submit_edit_contact',
+            'MassiliaJudo_Submit',
+            'Enregistrez',
+            'woocommerce-Button button'
+        );
+
         $userIdHidden = MassiliaJudo_Form_Builder::buildHidden(
             'MassiliaJudo_UserId',
             'MassiliaJudo_UserId',
@@ -598,40 +636,36 @@ STRING;
             $contactId
         );
 
-        $html = '<form action="#" method="POST" class="">%s
-    <p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
-	<p>
-	    %s&nbsp;%s
-	</p>
-	<p>
-	    %s
-	</p>
-	<p>
-	    %s&nbsp;%s
-	</p>
-	<p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
-	<span>
-	    %s%s
-	</span>
+        $html = '<form action="#" method="POST"  class="woocommerce-EditAccountForm edit-account">%s
+<!-- gender -->
+<div class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">%s</div>
+<!-- status -->
+<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last">%s</div>
+<!-- firstname -->
+<div class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">%s</div>
+<!-- lastname -->
+<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last">%s</div>
+<!-- email -->
+<div class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">%s</div>
+<!-- phone number -->
+<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last">%s</div>
+<!-- address -->
+<div class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">%s</div>
+<!-- cp -->
+<div class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">%s</div>
+<!-- city -->
+<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last">%s</div>
+<!-- submit -->
+<p class="pull-right">%s</p>
+<!-- hidden userId / judokaId -->
+<span>%s%s</span>
 </form>';
 
         echo sprintf(
             $html,
             wp_nonce_field('MassiliaJudo', 'massiliajudo_editcontact', true, false),
             $genderSelect,
+            $statusSelect,
             $firstNameText,
             $lastNameText,
             $emailText,
@@ -639,13 +673,12 @@ STRING;
             $addressText,
             $cityText,
             $cpText,
-            $statutText,
             $submit,
             $userIdHidden,
             $contactIdHidden
         );
 
-        
+
     }
 
     /**
@@ -798,7 +831,7 @@ HTML;
     {
         $css_directory = plugin_dir_url(__FILE__).'assets/css/';
         wp_enqueue_style('myaccount', $css_directory.'myaccount.css', false, 1.0, 'all');
-
+        wp_enqueue_style('boostrap', "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", false, 1.0, 'all');
     }
 
     public function check_data_edit_judoka_callback()

@@ -37,6 +37,8 @@ class MassiliaJudo_Plugin{
 
         include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_dojo_db.php';
 
+        include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_status_db.php';
+
         include_once plugin_dir_path( __FILE__ ).'/massiliajudo_form_builder.php';
         new MassiliaJudo_Form_Builder();
 

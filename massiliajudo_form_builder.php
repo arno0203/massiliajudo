@@ -24,7 +24,11 @@ class MassiliaJudo_Form_Builder
         }
 
         if($label != ''){
-            $label = '<label for="$idElement">'.$label.'</label>: ';
+            $requiredLabel = '';
+            if($isRequired) {
+                $requiredLabel = ' <span style="color:red">*</span>';
+            }
+            $label = '<label for="$idElement">'.$label.$requiredLabel.'</label>';
         }
 
         $option = '';
@@ -36,7 +40,7 @@ class MassiliaJudo_Form_Builder
             $selected = ($obj->id == $idSelected)?' selected ': '';
             $option .='<option value="'.$obj->id.'"'.$selected.'>'.$obj->name.'</option>'."\n";
         }
-        return $label.sprintf('<select name="%s" class="%s" %s id="%s">%s</select>',$name, $class, $required, $idElement, $option);
+        return '<div class="form-group">'.$label.sprintf('<select name="%s" class="%s" %s id="%s">%s</select>',$name, $class, $required, $idElement, $option).'</div>';
     }
 
     /**
@@ -47,38 +51,46 @@ class MassiliaJudo_Form_Builder
      * @param string $class
      * @return string
      */
-    public static function buildText($name='', $value = '', $idElement = null, $label = '', $placeholder = '', $class = '' ){
+    public static function buildText($name='', $value = '', $idElement = null, $label = '', $placeholder = '', $class = '', $isRequired = true ){
         if(is_null($idElement)){
             $idElement = uniqid('massiliajudo_');
         }
 
         if($label != ''){
-            $label = '<label for="$idElement">'.$label.'</label>: ';
+            if($isRequired) {
+                $requiredLabel = ' <span style="color:red">*</span>';
+            }
+            $label = '<label for="$idElement">'.$label.$requiredLabel.'</label>';
         }
 
         $text = sprintf('<input type="text" id="%s" name="%s" value="%s" class="%s" placeholder="%s"/>', $idElement, $name, $value, $class, $placeholder);
-        return $label.$text;
+        return '<div class="form-group">'.$label.$text.'</div>';
 
     }
 
     /**
+     * @param string $name
      * @param string $value
      * @param null $idElement
      * @param string $label
      * @param string $class
+     * @param bool $isRequired
      * @return string
      */
-    public static function buildDate($name = '', $value = '', $idElement = null, $label = '', $class =''){
+    public static function buildDate($name = '', $value = '', $idElement = null, $label = '', $class ='', $isRequired = true){
         return self::buildText($name, $value, $idElement, $label, '25/12/2000', $class);
     }
+
     /**
+     * @param string $name
      * @param string $value
      * @param null $idElement
      * @param string $label
      * @param string $class
+     * @param bool $isRequired
      * @return string
      */
-    public static function buildPhoneNumber($name = '', $value = '', $idElement = null, $label = '', $class =''){
+    public static function buildPhoneNumber($name = '', $value = '', $idElement = null, $label = '', $class ='', $isRequired = true){
         return self::buildText($name, $value, $idElement, $label, '+33 6 02 03 04 05', $class);
     }
 

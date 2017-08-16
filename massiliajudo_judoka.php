@@ -98,7 +98,15 @@ class MassiliaJudo_Judoka
 , `name` VARCHAR(255) NOT NULL );"
         );
         $wpdb->query(
-                "INSERT INTO {$wpdb->prefix}massiliajudo_gender (`name`) VALUES ('Homme'), ('Femme')"
+                "INSERT INTO {$wpdb->prefix}massiliajudo_gender (`name`) VALUES ('Masculin'), ('Feminin')"
+        );
+
+        $wpdb->query(
+            "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}massiliajudo_status (`id` INT AUTO_INCREMENT PRIMARY KEY
+, `name` VARCHAR(255) NOT NULL );"
+        );
+        $wpdb->query(
+            "INSERT INTO {$wpdb->prefix}massiliajudo_status (`name`) VALUES ('Mère'), ('Père'), ('Autre')"
         );
 
     }
