@@ -75,12 +75,10 @@ SQL;
                 status => $datas['MassiliaJudo_Status']
             ,
                 userId => $current_user->ID
-
             ,
                 genderId => $datas['MassiliaJudo_Gender'],
             )
         );
-
         return $wpdb->insert_id;
     }
 

@@ -48,6 +48,23 @@ class MassiliaJudo_Myaccount
         add_action('wp_enqueue_scripts', array($this, 'MassiliaJudo_myaccount_scripts'));
         add_action('wp_ajax_edit_judoka_ajax_callback', array($this, 'check_data_edit_judoka_callback'));
         add_action('wp_ajax_edit_judoka_ajax_callback', array($this, 'check_data_edit_contact_callback'));
+        $this->errors = [];
+        $this->errors['MassiliaJudo_Gender_Required'] = 'Sélectionnez un genre';
+        $this->errors['MassiliaJudo_Firstname_Required'] = 'Le prénom est obligatoire';
+        $this->errors['MassiliaJudo_Lastname_Required'] = 'Le nom est obligatoire';
+        $this->errors['MassiliaJudo_Email_Required'] = "L'email est obligatoire";
+        $this->errors['MassiliaJudo_Email_Formatted'] = "L'email n'est pas correcte";
+        $this->errors['MassiliaJudo_Dojo_Required'] = "Sélectionnez un dojo";
+        $this->errors['MassiliaJudo_Birthday_Required'] = "La date de naissance est obligatoire";
+        $this->errors['MassiliaJudo_ContactId_Required'] = "Connectez vous";
+        $this->errors['MassiliaJudo_PhoneNumber_Required'] = "Saisissez un numéro de téléphone";
+        $this->errors['MassiliaJudo_PhoneNumber_Formatted'] = "Le numéro de téléphone n'est pas formater convenablement (ex: +33 6 01 02 03 04)";
+        $this->errors['MassiliaJudo_Address_Required'] = "Une adresse postale est obligatoire";
+        $this->errors['MassiliaJudo_City_Required'] = "Une ville postale est obligatoire";
+        $this->errors['MassiliaJudo_Cp_Required'] = "Un code postal est obligatoire";
+        $this->errors['MassiliaJudo_Status_Required'] = "Le status est obligatoire";
+
+
 
     }
 
@@ -361,26 +378,26 @@ HTML;
     private function chekDataJudoka($datas)
     {
         $errors = [];
-        if (intval($datas['MassiliaJudo_Gender']) === 0) {
-            $errors['MassiliaJudo_Gender'] = 'Sélectionnez un genre';
+        if (intval($datas['MassiliaJudo_Gender_Required']) === 0) {
+            $errors[] = 'MassiliaJudo_Gender';
         }
         if (empty($datas['MassiliaJudo_Firstname'])) {
-            $errors['MassiliaJudo_Firstname'] = 'Le prénom est obligatoire';
+            $errors[] = 'MassiliaJudo_Firstname_Required';
         }
         if (empty($datas['MassiliaJudo_Lastname'])) {
-            $errors['MassiliaJudo_Lastname'] = 'Le nom est obligatoire';
+            $errors[] = 'MassiliaJudo_Lastname_Required';
         }
         if (empty($datas['MassiliaJudo_Email'])) {
-            $errors['MassiliaJudo_Email'] = "L'email est obligatoire";
+            $errors[] = 'MassiliaJudo_Email_Required';
         }
         if (intval($datas['MassiliaJudo_Dojo']) === 0) {
-            $errors['MassiliaJudo_Dojo'] = "Sélectionnez un dojo";
+            $errors[] = 'MassiliaJudo_Dojo_Required';
         }
         if (empty($datas['MassiliaJudo_Birthday'])) {
-            $errors['MassiliaJudo_Birthday'] = "La date de naissance est obligatoire";
+            $errors[] = 'MassiliaJudo_Birthday_Required';
         }
         if (empty($datas['MassiliaJudo_ContactId'])) {
-            $errors['MassiliaJudo_ContactId'] = "Connectez vous";
+            $errors[] = 'MassiliaJudo_ContactId_Required';
         }
 
         return $errors;
@@ -510,7 +527,83 @@ STRING;
     public function massilia_edit_contact_endpoint_content($contactId = null)
     {
         $current_user = wp_get_current_user();
-        $genderId = $firstName = $lastName = $email = $phoneNumber = $address = $city = $cp = $status = '';
+        $genderId = $firstName = $lastName = $email = $phoneNumber = $address = $city = $cp = $statusId = '';
+
+        $MassiliaJudo_Gender_Error = $MassiliaJudo_Status_Error = $MassiliaJudo_Firstname_Error = '';
+        $MassiliaJudo_Lastname_Error = $MassiliaJudo_Email_Error = $MassiliaJudo_PhoneNumber_Error = '';
+        $MassiliaJudo_Address_Error = $MassiliaJudo_City_Error = $MassiliaJudo_Cp_Error = '';
+        if (isset($_POST['submit_edit_contact']) && isset($_POST['massiliajudo_editcontact'])) {
+            if (wp_verify_nonce($_POST['massiliajudo_editcontact'], 'MassiliaJudo')) {
+                $errors = $this->chekDataContact($_POST);
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        if (strstr($error, "MassiliaJudo_Gender")) {
+                            $MassiliaJudo_Gender_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Status")) {
+                            $MassiliaJudo_Status_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Firstname")) {
+                            $MassiliaJudo_Firstname_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Lastname")) {
+                            $MassiliaJudo_Lastname_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Email")) {
+                            $MassiliaJudo_Email_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_PhoneNumber")) {
+                            $MassiliaJudo_PhoneNumber_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Address")) {
+                            $MassiliaJudo_Address_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_City")) {
+                            $MassiliaJudo_City_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Cp")) {
+                            $MassiliaJudo_Cp_Error = $this->errors[$error];
+                        }
+                    }
+                }
+                $datas = $_POST;
+
+                if (!empty($datas)) {
+                    foreach ($datas as $data) {
+
+                        if (!empty($datas["MassiliaJudo_Gender"])) {
+                            $genderId = $datas["MassiliaJudo_Gender"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Status"])) {
+                            $statusId = $datas["MassiliaJudo_Status"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Firstname"])) {
+                            $firstName = $datas["MassiliaJudo_Firstname"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Lastname"])) {
+                            $lastName = $datas["MassiliaJudo_Lastname"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Email"])) {
+                            $email = $datas["MassiliaJudo_Email"];
+                        }
+                        if (!empty($datas["MassiliaJudo_PhoneNumber"])) {
+                            $phoneNumber = $datas["MassiliaJudo_PhoneNumber"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Address"])) {
+                            $address = $datas["MassiliaJudo_Address"];
+                        }
+                        if (!empty($datas["MassiliaJudo_City"])) {
+                            $city = $datas["MassiliaJudo_City"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Cp"])) {
+                            $cp = $datas["MassiliaJudo_Cp"];
+                        }
+                    }
+
+                }
+            }
+        }
+
 
         if (!empty($contactId)) {
             if (MassiliaJudo_Contact_DB::isMyContact($current_user->ID, $contactId)) {
@@ -534,24 +627,19 @@ STRING;
             'MassiliaJudo_Gender',
             $genderId,
             'MassiliaJudo_Gender',
-            'Genre'
+            'Genre',
+            true,
+            $MassiliaJudo_Gender_Error
         );
 
         $statusSelect = MassiliaJudo_Form_Builder::buildSelect(
             'MassiliaJudo_Status_DB',
             'MassiliaJudo_Status',
-            $genderId,
-            'MassiliaJudo_Status',
-            'Statut'
-        );
-        $statutText = MassiliaJudo_Form_Builder::buildText(
-            'MassiliaJudo_Status',
-            $status,
+            $statusId,
             'MassiliaJudo_Status',
             'Statut',
-            'Saisissez votre statut (père, mère, beau-père, belle-mère, autre)',
-            'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_Status_Error
         );
 
         $firstNameText = MassiliaJudo_Form_Builder::buildText(
@@ -561,7 +649,8 @@ STRING;
             'Prénom',
             'Rentrez le prénom du contact',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_Firstname_Error
         );
         $lastNameText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Lastname',
@@ -570,7 +659,8 @@ STRING;
             'Nom',
             'Rentrez le nom du contact',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_Lastname_Error
         );
         $emailText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Email',
@@ -579,7 +669,8 @@ STRING;
             'Email',
             'Rentrez l\'email du contact',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_Email_Error
         );
         $phoneNumberText = MassiliaJudo_Form_Builder::buildPhoneNumber(
             'MassiliaJudo_PhoneNumber',
@@ -587,7 +678,8 @@ STRING;
             'MassiliaJudo_PhoneNumber',
             'Numéro de téléphone portable',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_PhoneNumber_Error
         );
         $addressText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Address',
@@ -596,7 +688,8 @@ STRING;
             'Adresse',
             'Saisissez l\'adresse postale',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_Address_Error
         );
         $cityText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_City',
@@ -605,7 +698,8 @@ STRING;
             'Ville',
             'Saisissez la ville',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_City_Error
         );
         $cpText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Cp',
@@ -614,7 +708,8 @@ STRING;
             'Code postal',
             'Saisissez le code postal',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_Cp_Error
         );
 
         $submit = MassiliaJudo_Form_Builder::buildSubmit(
@@ -648,7 +743,7 @@ STRING;
 <!-- email -->
 <div class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">%s</div>
 <!-- phone number -->
-<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last">%s</div>
+<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last has-error">%s</div>
 <!-- address -->
 <div class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">%s</div>
 <!-- cp -->
@@ -689,11 +784,11 @@ STRING;
         if (isset($_POST['submit_edit_contact']) && isset($_POST['massiliajudo_editcontact'])) {
             if (wp_verify_nonce($_POST['massiliajudo_editcontact'], 'MassiliaJudo')) {
                 $errors = $this->chekDataContact($_POST);
-                if (!empty($errors)) {
-                    var_dump("Error traitement_formulaire_edit_contact");
-                } else {
+
+                if (empty($errors)) {
                     $datas = MassiliaJudo_Contact::formatDatasToDb($_POST);
-                    if (empty($_POST['MassiliaJudo_ContactId'])) {
+
+                    if ($_POST['MassiliaJudo_ContactId'] == '') {
                         $contact_id = MassiliaJudo_Contact_DB::saveContact($datas);
                     } else {
                         MassiliaJudo_Contact_DB::updateContact($datas);
@@ -779,34 +874,38 @@ HTML;
     {
         $errors = [];
         if (intval($datas['MassiliaJudo_Gender']) === 0) {
-            $errors['MassiliaJudo_Gender'] = 'Sélectionnez un genre';
+            $errors[] = 'MassiliaJudo_Gender_Required';
         }
         if (empty($datas['MassiliaJudo_Firstname'])) {
-            $errors['MassiliaJudo_Firstname'] = 'Le prénom est obligatoire';
+            $errors[] = 'MassiliaJudo_Firstname_Required';
         }
         if (empty($datas['MassiliaJudo_Lastname'])) {
-            $errors['MassiliaJudo_Lastname'] = 'Le nom est obligatoire';
+            $errors [] = 'MassiliaJudo_Lastname_Required';
         }
         if (empty($datas['MassiliaJudo_Email'])) {
-            $errors['MassiliaJudo_Email'] = "L'email est obligatoire";
+            $errors[] = 'MassiliaJudo_Email_Required';
+        }elseif(!filter_var($datas['MassiliaJudo_Email'], FILTER_VALIDATE_EMAIL)){
+            $errors[] = 'MassiliaJudo_Email_Formatted';
         }
         if (intval($datas['MassiliaJudo_PhoneNumber']) === 0) {
-            $errors['MassiliaJudo_PhoneNumber'] = "Saisissez un numéro de téléphone";
+            $errors[] = 'MassiliaJudo_PhoneNumber_Required';
+        }elseif(!preg_match('/^(\+33)[[:blank:]](6|7)([[:blank:]]([0-9]{2})){4}$/', $datas['MassiliaJudo_PhoneNumber'])){
+            $errors[] = 'MassiliaJudo_PhoneNumber_Formatted';
         }
         if (empty($datas['MassiliaJudo_Address'])) {
-            $errors['MassiliaJudo_Address'] = "Une adresse postale est obligatoire";
+            $errors[] = 'MassiliaJudo_Address_Required';
         }
         if (empty($datas['MassiliaJudo_City'])) {
-            $errors['MassiliaJudo_City'] = "Une ville postale est obligatoire";
+            $errors[] = 'MassiliaJudo_City_Required';
         }
         if (empty($datas['MassiliaJudo_Cp'])) {
-            $errors['MassiliaJudo_Cp'] = "Un code postal est obligatoire";
+            $errors[] = 'MassiliaJudo_Cp_Required';
         }
         if (empty($datas['MassiliaJudo_Status'])) {
-            $errors['MassiliaJudo_Status'] = "Le status est obligatoire";
+            $errors[] = 'MassiliaJudo_Status_Required';
         }
 
-        return $errors;
+        return array_map("utf8_encode", $errors );
 
     }
 

@@ -4,15 +4,17 @@
 class MassiliaJudo_Form_Builder
 {
     /**
-     * @param $object
+     * @param null $object
+     * @param string $name
      * @param null $idSelected
      * @param null $idElement
      * @param string $label
      * @param string $class
      * @param bool $isRequired
+     * @param string $error
      * @return string
      */
-    public static function buildSelect($object = null, $name='', $idSelected = null, $idElement= null, $label = '', $class = '', $isRequired = true)
+    public static function buildSelect($object = null, $name='', $idSelected = null, $idElement= null, $label = '', $class = '', $isRequired = true, $error = '')
     {
         if(is_null($class)){
             return '';
@@ -44,26 +46,38 @@ class MassiliaJudo_Form_Builder
     }
 
     /**
+     * @param string $name
      * @param string $value
      * @param null $idElement
      * @param string $label
      * @param string $placeholder
      * @param string $class
+     * @param bool $isRequired
+     * @param string $error
      * @return string
      */
-    public static function buildText($name='', $value = '', $idElement = null, $label = '', $placeholder = '', $class = '', $isRequired = true ){
+    public static function buildText($name='', $value = '', $idElement = null, $label = '', $placeholder = '', $class = '', $isRequired = true, $error = '' ){
         if(is_null($idElement)){
             $idElement = uniqid('massiliajudo_');
+        }
+
+        $labelError = $inputErro = $textError =  '';
+        if(!empty($error)){
+            $labelError = ' style="color:red" ';
+            $inputError = ' style="border-color: red !important" ';
+            $textError = '<span style="color:red;font-style: italic;font-size: 0.9em">'.$error.'</span>';
         }
 
         if($label != ''){
             if($isRequired) {
                 $requiredLabel = ' <span style="color:red">*</span>';
             }
-            $label = '<label for="$idElement">'.$label.$requiredLabel.'</label>';
+            $label = '<label for="$idElement" '.$labelError.'>'.$label.$requiredLabel.'</label>'.$textError;
         }
 
-        $text = sprintf('<input type="text" id="%s" name="%s" value="%s" class="%s" placeholder="%s"/>', $idElement, $name, $value, $class, $placeholder);
+
+
+        $text = sprintf('<input type="text" id="%s" name="%s" value="%s" class="%s" placeholder="%s" %s/>', $idElement, $name, $value, $class, $placeholder, $inputError);
         return '<div class="form-group">'.$label.$text.'</div>';
 
     }
@@ -75,10 +89,11 @@ class MassiliaJudo_Form_Builder
      * @param string $label
      * @param string $class
      * @param bool $isRequired
+     * @param string $error
      * @return string
      */
-    public static function buildDate($name = '', $value = '', $idElement = null, $label = '', $class ='', $isRequired = true){
-        return self::buildText($name, $value, $idElement, $label, '25/12/2000', $class);
+    public static function buildDate($name = '', $value = '', $idElement = null, $label = '', $class ='', $isRequired = true, $error = ''){
+        return self::buildText($name, $value, $idElement, $label, '25/12/2000', $class, $isRequired, $error);
     }
 
     /**
@@ -88,10 +103,11 @@ class MassiliaJudo_Form_Builder
      * @param string $label
      * @param string $class
      * @param bool $isRequired
+     * @param string $error
      * @return string
      */
-    public static function buildPhoneNumber($name = '', $value = '', $idElement = null, $label = '', $class ='', $isRequired = true){
-        return self::buildText($name, $value, $idElement, $label, '+33 6 02 03 04 05', $class);
+    public static function buildPhoneNumber($name = '', $value = '', $idElement = null, $label = '', $class ='', $isRequired = true, $error = ''){
+        return self::buildText($name, $value, $idElement, $label, '+33 6 02 03 04 05', $class, $isRequired, $error);
     }
 
 

@@ -77,6 +77,7 @@ class MassiliaJudo_Contact
         if(!empty($datas['MassiliaJudo_Lastname']) ){
             $ret['MassiliaJudo_Lastname'] = mb_strtoupper(MassiliaJudo_Myaccount::wd_remove_accents($datas['MassiliaJudo_Lastname']));
         }
+        $ret['MassiliaJudo_Address'] = stripslashes( $ret['MassiliaJudo_Address']);
         $ret['MassiliaJudo_Address'] = addslashes( $ret['MassiliaJudo_Address']);
         return $ret;
     }
