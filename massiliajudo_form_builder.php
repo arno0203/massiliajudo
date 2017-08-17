@@ -118,8 +118,8 @@ class MassiliaJudo_Form_Builder
      * @param string $class
      * @return string
      */
-    public static function buildSubmit($name = '', $idElement = null, $value = '', $class =''){
-        return sprintf('<input type="submit" name="%s" id="%s" value="%s" class="%s" />', $name, $idElement, $value, $class);
+    public static function buildSubmit($name = '', $idElement = null, $value = '', $class ='', $javascript = ''){
+        return sprintf('<input type="submit" name="%s" id="%s" value="%s" class="%s"  %s>', $name, $idElement, $value, $class, $javascript);
     }
 
     public static function buildHidden($name = '', $idElement = null, $value = '', $class = ''){

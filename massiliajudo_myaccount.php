@@ -54,11 +54,13 @@ class MassiliaJudo_Myaccount
         $this->errors['MassiliaJudo_Lastname_Required'] = 'Le nom est obligatoire';
         $this->errors['MassiliaJudo_Email_Required'] = "L'email est obligatoire";
         $this->errors['MassiliaJudo_Email_Formatted'] = "L'email n'est pas correcte";
-        $this->errors['MassiliaJudo_Dojo_Required'] = "Sélectionnez un dojo";
+        $this->errors['MassiliaJudo_Dojo_Required'] = "Le dojo est obligatoire";
         $this->errors['MassiliaJudo_Birthday_Required'] = "La date de naissance est obligatoire";
-        $this->errors['MassiliaJudo_ContactId_Required'] = "Connectez vous";
+        $this->errors['MassiliaJudo_ContactId_Required'] = "Connectez-vous";
         $this->errors['MassiliaJudo_PhoneNumber_Required'] = "Saisissez un numéro de téléphone";
-        $this->errors['MassiliaJudo_PhoneNumber_Formatted'] = "Le numéro de téléphone n'est pas formater convenablement (ex: +33 6 01 02 03 04)";
+        $this->errors['MassiliaJudo_PhoneNumber_Formatted'] = "Le numéro de téléphone n'est pas formater convenablement (ex: +33 6 01 02 03 04)";$this->errors['MassiliaJudo_PhoneNumber_Required'] = "Saisissez un numéro de téléphone";
+        $this->errors['MassiliaJudo_Birthday_Required'] = "La date de naissance est obigatoire";
+        $this->errors['MassiliaJudo_Birthday_Formatted'] = "La date de naissance n'est pas au bon format (ex: jj/mm/aaaa)";
         $this->errors['MassiliaJudo_Address_Required'] = "Une adresse postale est obligatoire";
         $this->errors['MassiliaJudo_City_Required'] = "Une ville postale est obligatoire";
         $this->errors['MassiliaJudo_Cp_Required'] = "Un code postal est obligatoire";
@@ -163,6 +165,62 @@ class MassiliaJudo_Myaccount
         $current_user = wp_get_current_user();
         $genderId = $dojoId = $firstName = $lastName = $email = $birthday = '';
 
+        $MassiliaJudo_Gender_Error = $MassiliaJudo_Firstname_Error = $MassiliaJudo_Lastname_Error = '';
+        $MassiliaJudo_Email_Error = $MassiliaJudo_Birthday_Error = $MassiliaJudo_Dojo_Error = '';
+
+        if (isset($_POST['submit_edit_judoka']) && isset($_POST['massiliajudo_editjudoka'])) {
+            if (wp_verify_nonce($_POST['massiliajudo_editjudoka'], 'MassiliaJudo')) {
+                $errors = $this->chekDataJudoka($_POST);
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        if (strstr($error, "MassiliaJudo_Gender")) {
+                            $MassiliaJudo_Gender_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Firstname")) {
+                            $MassiliaJudo_Firstname_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Lastname")) {
+                            $MassiliaJudo_Lastname_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Email")) {
+                            $MassiliaJudo_Email_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Birthday")) {
+                            $MassiliaJudo_Birthday_Error = $this->errors[$error];
+                        }
+                        if (strstr($error, "MassiliaJudo_Dojo")) {
+                            $MassiliaJudo_Dojo_Error = $this->errors[$error];
+                        }
+                    }
+                }
+                $datas = $_POST;
+
+                if (!empty($datas)) {
+                    foreach ($datas as $data) {
+
+                        if (!empty($datas["MassiliaJudo_Gender"])) {
+                            $genderId = $datas["MassiliaJudo_Gender"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Firstname"])) {
+                            $firstName = $datas["MassiliaJudo_Firstname"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Lastname"])) {
+                            $lastName = $datas["MassiliaJudo_Lastname"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Email"])) {
+                            $email = $datas["MassiliaJudo_Email"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Birthday"])) {
+                            $birthday = $datas["MassiliaJudo_Birthday"];
+                        }
+                        if (!empty($datas["MassiliaJudo_Dojo"])) {
+                            $dojoId = $datas["MassiliaJudo_Dojo"];
+                        }
+                    }
+                }
+            }
+        }
+
         if (!empty($judokaId)) {
             if (MassiliaJudo_Judoka_DB::isMyJodoka($current_user->ID, $judokaId)) {
                 $datas = MassiliaJudo_Judoka::formatDataToForm(MassiliaJudo_Judoka_DB::getJudokasById($judokaId));
@@ -183,7 +241,8 @@ class MassiliaJudo_Myaccount
             'MassiliaJudo_Gender',
             'Genre',
             'woocommerce-Input select select2',
-            true
+            true,
+            $MassiliaJudo_Gender_Error
         );
         $dojoSelect = MassiliaJudo_Form_Builder::buildSelect(
             'MassiliaJudo_Dojo_DB',
@@ -192,7 +251,8 @@ class MassiliaJudo_Myaccount
             'MassiliaJudo_Dojo',
             'Dojo',
             'woocommerce-Input select select2',
-            true
+            true,
+            $MassiliaJudo_Dojo_Error
         );
         $firstNameText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Firstname',
@@ -201,7 +261,8 @@ class MassiliaJudo_Myaccount
             'Prénom',
             'Rentrez le prénom du judoka',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_Firstname_Error
         );
         $lastNameText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Lastname',
@@ -210,7 +271,8 @@ class MassiliaJudo_Myaccount
             'Nom',
             'Rentrez le nom du judoka',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_Lastname_Error
         );
         $emailText = MassiliaJudo_Form_Builder::buildText(
             'MassiliaJudo_Email',
@@ -219,7 +281,8 @@ class MassiliaJudo_Myaccount
             'Email',
             'Rentrez l\'email du judoka',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_Email_Error
         );
         $birthdayDate = MassiliaJudo_Form_Builder::buildDate(
             'MassiliaJudo_Birthday',
@@ -227,7 +290,8 @@ class MassiliaJudo_Myaccount
             'MassiliaJudo_Birthday',
             'Date de naissance',
             'woocommerce-Input woocommerce-Input--text input-text',
-            true
+            true,
+            $MassiliaJudo_Birthday_Error
         );
         $submit = MassiliaJudo_Form_Builder::buildSubmit(
             'submit_edit_judoka',
@@ -289,12 +353,10 @@ class MassiliaJudo_Myaccount
 
             if (wp_verify_nonce($_POST['massiliajudo_editjudoka'], 'MassiliaJudo')) {
                 $errors = $this->chekDataJudoka($_POST);
-                if (!empty($errors)) {
-                    var_dump("Error traitement_formulaire_edit_judoka");
-                } else {
+                if (empty($errors)) {
                     $datas = MassiliaJudo_Judoka::formatDatasToDb($_POST);
 
-                    if (empty($_POST['MassiliaJudo_JudokaId'])) {
+                    if ($_POST['MassiliaJudo_JudokaId'] == '') {
                         $judoka_id = MassiliaJudo_Judoka_DB::saveJudoka($datas);
                     } else {
                         MassiliaJudo_Judoka_DB::updateJudoka($datas);
@@ -321,12 +383,9 @@ class MassiliaJudo_Myaccount
 <p>Vous êtes sur le point du supprimer %s de votre compte.</p>
 <p>Confirmez-vous cette suppression?</p>
 <form action="#" method="POST" class="">%s%s
-    <p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
+<div class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">%s</div>
+<!-- dojo -->
+<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last">%s</div>
 </form>
 HTML;
             if ($judokaObj->genderID == 1) {
@@ -339,11 +398,18 @@ HTML;
                 'MassiliaJudo_JudokaId',
                 $judokaId
             );
-            $cancel = MassiliaJudo_Form_Builder::buildSubmit('cancel_del_judoka', 'MassiliaJudo_Cancel_Del', 'Annulez');
+            $cancel = MassiliaJudo_Form_Builder::buildSubmit(
+                'cancel_del_judoka',
+                'MassiliaJudo_Cancel_Del',
+                'Annulez',
+                'woocommerce-Button button',
+                'onclick="javascript:history.back();"'
+            );
             $submit = MassiliaJudo_Form_Builder::buildSubmit(
                 'submit_del_judoka',
                 'MassiliaJudo_Submit_Del',
-                'Supprimez'
+                'Supprimez',
+                'woocommerce-Button button'
             );
             echo sprintf(
                 $html,
@@ -378,8 +444,9 @@ HTML;
     private function chekDataJudoka($datas)
     {
         $errors = [];
-        if (intval($datas['MassiliaJudo_Gender_Required']) === 0) {
-            $errors[] = 'MassiliaJudo_Gender';
+
+        if ($datas['MassiliaJudo_Gender'] == '') {
+            $errors[] = 'MassiliaJudo_Gender_Required';
         }
         if (empty($datas['MassiliaJudo_Firstname'])) {
             $errors[] = 'MassiliaJudo_Firstname_Required';
@@ -389,13 +456,19 @@ HTML;
         }
         if (empty($datas['MassiliaJudo_Email'])) {
             $errors[] = 'MassiliaJudo_Email_Required';
+        }elseif(!filter_var($datas['MassiliaJudo_Email'], FILTER_VALIDATE_EMAIL)){
+            $errors[] = 'MassiliaJudo_Email_Formatted';
         }
+
         if (intval($datas['MassiliaJudo_Dojo']) === 0) {
             $errors[] = 'MassiliaJudo_Dojo_Required';
         }
         if (empty($datas['MassiliaJudo_Birthday'])) {
             $errors[] = 'MassiliaJudo_Birthday_Required';
+        }elseif(!preg_match('/^(0[1-9]|1[0-9]|2[0-9]|3[0-1])\/(0[1-9]|1[0-2])\/[1-2][09][0-9]{2}$/', $datas['MassiliaJudo_Birthday'])){
+            $errors[] = 'MassiliaJudo_Birthday_Formatted';
         }
+
         if (empty($datas['MassiliaJudo_ContactId'])) {
             $errors[] = 'MassiliaJudo_ContactId_Required';
         }
@@ -608,7 +681,6 @@ STRING;
         if (!empty($contactId)) {
             if (MassiliaJudo_Contact_DB::isMyContact($current_user->ID, $contactId)) {
                 $datas = MassiliaJudo_Contact::formatDataToForm(MassiliaJudo_Contact_DB::getContactsById($contactId));
-
                 $genderId = intval($datas->genderId);
                 $firstName = $datas->firstname;
                 $lastName = $datas->lastname;
@@ -617,7 +689,7 @@ STRING;
                 $address = $datas->address;
                 $city = $datas->city;
                 $cp = $datas->cp;
-                $status = $datas->status;
+                $status = $datas->statusId;
 
             }
         }
@@ -635,7 +707,7 @@ STRING;
         $statusSelect = MassiliaJudo_Form_Builder::buildSelect(
             'MassiliaJudo_Status_DB',
             'MassiliaJudo_Status',
-            $statusId,
+            $status,
             'MassiliaJudo_Status',
             'Statut',
             true,
@@ -815,12 +887,9 @@ STRING;
 <p>Vous êtes sur le point du supprimer %s de votre compte.</p>
 <p>Confirmez-vous cette suppression?</p>
 <form action="#" method="POST" class="">%s%s
-    <p>
-	    %s
-	</p>
-	<p>
-	    %s
-	</p>
+<div class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">%s</div>
+<!-- dojo -->
+<div class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last">%s</div>
 </form>
 HTML;
             $contactString = 'le contact '.$contactObj->firstname.' '.$contactObj->lastname;
@@ -833,12 +902,15 @@ HTML;
             $cancel = MassiliaJudo_Form_Builder::buildSubmit(
                 'cancel_del_contact',
                 'MassiliaJudo_Cancel_Del',
-                'Annulez'
+                'Annulez',
+                'woocommerce-Button button',
+                'onclick="javascript:history.back();"'
             );
             $submit = MassiliaJudo_Form_Builder::buildSubmit(
                 'submit_del_contact',
                 'MassiliaJudo_Submit_Del',
-                'Supprimez'
+                'Supprimez',
+                'woocommerce-Button button'
             );
             echo sprintf(
                 $html,

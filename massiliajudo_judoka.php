@@ -90,7 +90,7 @@ class MassiliaJudo_Judoka
         );
         $wpdb->query(
             "INSERT INTO {$wpdb->prefix}massiliajudo_dojo (`name`, `actif`, `order`) VALUES 
-              ('Saint Jérôme', 1,1), ('Saint Barnabé', 1, 2), ('La Pauline', 1, 3), ('Pélabon',0,4), ('La Visitation', 0, 5)"
+              ('Saint Jérôme', 1,1), ('Saint Barnabé', 1, 2), ('La Pauline', 1, 3), ('Pélabon',1,4), ('La Visitation', 1, 5)"
         );
 
         $wpdb->query(
@@ -118,6 +118,7 @@ class MassiliaJudo_Judoka
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}massiliajudo_judoka;");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}massiliajudo_dojo;");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}massiliajudo_gender;");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}massiliajudo_status;");
     }
 
     /**

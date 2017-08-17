@@ -49,7 +49,7 @@ class MassiliaJudo_Contact
 , address VARCHAR(255) NOT NULL
 , city VARCHAR(255) NOT NULL
 , cp VARCHAR(5) NOT NULL 
-, status VARCHAR(15) NOT NULL
+, statusId INT(10) NOT NULL
 , userId BIGINT(20) NOT NULL
 , genderId INT(10) NOT NULL
 , actif SMALLINT NOT NULL DEFAULT 1);"

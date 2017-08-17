@@ -72,7 +72,7 @@ SQL;
             ,
                 cp => $datas['MassiliaJudo_Cp']
             ,
-                status => $datas['MassiliaJudo_Status']
+                statusId => $datas['MassiliaJudo_Status']
             ,
                 userId => $current_user->ID
             ,
@@ -109,7 +109,7 @@ SQL;
             ,
                 cp => $datas['MassiliaJudo_Cp']
             ,
-                status => $datas['MassiliaJudo_Status']
+                statusId => $datas['MassiliaJudo_Status']
             ,
                 userId => $current_user->ID
 
