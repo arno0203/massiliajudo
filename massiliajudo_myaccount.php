@@ -358,6 +358,7 @@ class MassiliaJudo_Myaccount
 
                     if ($_POST['MassiliaJudo_JudokaId'] == '') {
                         $judoka_id = MassiliaJudo_Judoka_DB::saveJudoka($datas);
+                        $this->sendEmail($datas);
                     } else {
                         MassiliaJudo_Judoka_DB::updateJudoka($datas);
                     }
@@ -1019,6 +1020,11 @@ HTML;
         die();
     }
 
+    /**
+     * @param $str
+     * @param string $charset
+     * @return mixed|string
+     */
     public static function wd_remove_accents($str, $charset = 'utf-8')
     {
         $str = htmlentities($str, ENT_NOQUOTES, $charset);
@@ -1028,6 +1034,44 @@ HTML;
         $str = preg_replace('#&[^;]+;#', '', $str); // supprime les autres caractères
 
         return $str;
+    }
+
+    /**
+     * @param $datas
+     */
+    public function sendEmail($datas){
+        global $wpdb;
+        $recipients = ['arnaud@dollois', 'support@massilia-judo.fr'];
+        $object = 'Nouvelle Inscription - 2017 / 2018';
+
+        $sender = 'no-reply@massili-judo.fr';
+        $header = array('From: '.$sender);
+
+        $gender = MassiliaJudo_Gender_DB::getGenderById($datas['MassiliaJudo_Gender']);
+        $genderLibelle = $gender['name'];
+        $dojo = MassiliaJudo_Dojo_DB::getDojoById($datas['MassiliaJudo_Dojo']);
+        $dojoLibelle = $dojo['name'];
+
+        $lastName = $datas['MassiliaJudo_Lastname'];
+        $firstName = $datas['MassiliaJudo_Firstname'];
+        $email = $datas['MassiliaJudo_Email'];
+        $birthdayDate = $datas['MassiliaJudo_Birthday'];
+
+        $content = <<<HTML
+<h2>Nouveau Judo</h2>
+<p>Voici les informations saisies:<br>
+<ul>
+    <li>Civilité: $genderLibelle</li>
+    <li>Prénom: $genderLibelle</li>
+    <li>Dollois: $genderLibelle</li>
+    <li>Date de naissence: $birthdayDate</li>
+    <li>Dojo: $dojoLibelle</li>
+</ul></p>
+HTML;
+
+        foreach ($recipients as $recipient) {
+            $result = wp_mail($recipient, $object, $content, $header);
+        }
     }
 
 }
