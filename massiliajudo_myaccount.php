@@ -1040,7 +1040,7 @@ HTML;
      * @param $datas
      */
     public function sendEmail($datas){
-        global $wpdb;
+       echo '<pre>';var_dump($datas);echo '</pre>';exit;
         $recipients = ['arnaud@dollois', 'support@massilia-judo.fr'];
         $object = 'Nouvelle Inscription - 2017 / 2018';
 
@@ -1048,9 +1048,9 @@ HTML;
         $header = array('From: '.$sender);
 
         $gender = MassiliaJudo_Gender_DB::getGenderById($datas['MassiliaJudo_Gender']);
-        $genderLibelle = $gender['name'];
+        $genderLibelle = $gender['value'];
         $dojo = MassiliaJudo_Dojo_DB::getDojoById($datas['MassiliaJudo_Dojo']);
-        $dojoLibelle = $dojo['name'];
+        $dojoLibelle = $dojo['value'];
 
         $lastName = $datas['MassiliaJudo_Lastname'];
         $firstName = $datas['MassiliaJudo_Firstname'];
@@ -1058,15 +1058,16 @@ HTML;
         $birthdayDate = $datas['MassiliaJudo_Birthday'];
 
         $content = <<<HTML
-<h2>Nouveau Judo</h2>
-<p>Voici les informations saisies:<br>
-<ul>
-    <li>Civilité: $genderLibelle</li>
-    <li>Prénom: $genderLibelle</li>
-    <li>Dollois: $genderLibelle</li>
-    <li>Date de naissence: $birthdayDate</li>
-    <li>Dojo: $dojoLibelle</li>
-</ul></p>
+Nouveau Judo
+
+Voici les informations saisies:
+
+    Civilité: $genderLibelle
+    Prénom: $firstName
+    Dollois: $lastName
+    Date de naissence: $birthdayDate
+    Dojo: $dojoLibelle
+
 HTML;
 
         foreach ($recipients as $recipient) {
