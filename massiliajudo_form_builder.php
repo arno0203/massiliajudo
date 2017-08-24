@@ -42,7 +42,7 @@ class MassiliaJudo_Form_Builder
             $selected = ($obj->id == $idSelected)?' selected ': '';
             $option .='<option value="'.$obj->id.'"'.$selected.'>'.$obj->name.'</option>'."\n";
         }
-        return '<div class="form-group">'.$label.sprintf('<select name="%s" class="%s" %s id="%s">%s</select>',$name, $class, $required, $idElement, $option).'</div>';
+        return '<div class="form-group">'.$label.sprintf('<select name="%s" class="%s" style="color: #555;" %s id="%s">%s</select>',$name, $class, $required, $idElement, $option).'</div>';
     }
 
     /**

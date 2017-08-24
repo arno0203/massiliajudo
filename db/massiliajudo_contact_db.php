@@ -79,6 +79,7 @@ SQL;
                 genderId => $datas['MassiliaJudo_Gender'],
             )
         );
+
         return $wpdb->insert_id;
     }
 

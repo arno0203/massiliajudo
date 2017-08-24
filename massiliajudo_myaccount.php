@@ -66,8 +66,6 @@ class MassiliaJudo_Myaccount
         $this->errors['MassiliaJudo_Cp_Required'] = "Un code postal est obligatoire";
         $this->errors['MassiliaJudo_Status_Required'] = "Le status est obligatoire";
 
-
-
     }
 
     public function MassiliaJudo_myaccount_scripts()
@@ -296,7 +294,7 @@ class MassiliaJudo_Myaccount
         $submit = MassiliaJudo_Form_Builder::buildSubmit(
             'submit_edit_judoka',
             'MassiliaJudo_Submit',
-            'Enregistrez',
+            'Enregistrer',
             'woocommerce-Button button'
         );
 
@@ -402,14 +400,14 @@ HTML;
             $cancel = MassiliaJudo_Form_Builder::buildSubmit(
                 'cancel_del_judoka',
                 'MassiliaJudo_Cancel_Del',
-                'Annulez',
+                'Annuler',
                 'woocommerce-Button button',
                 'onclick="javascript:history.back();"'
             );
             $submit = MassiliaJudo_Form_Builder::buildSubmit(
                 'submit_del_judoka',
                 'MassiliaJudo_Submit_Del',
-                'Supprimez',
+                'Supprimer',
                 'woocommerce-Button button'
             );
             echo sprintf(
@@ -505,20 +503,20 @@ STRING;
 
         $table = <<<STRING
         <div class="woocommerce-table-responsive">
-<table class="table table-striped table-hover">
-<tr>
+<table class="table table-striped">
+<tr style="background-color: black">
     <th>Nom</th>
     <th>Prénom</th>    
     <th>Email</th>    
     <th>Dojo</th>
     <th>Année de pratique</th>        
-    <th>Acions</th>        
+    <th>Actions</th>        
 </tr>
 STRING;
         foreach ($judokas as $judoka) {
 
             $table .= <<<STRING
-<tr>
+<tr style="background-color: black">
 <td>$judoka->lastname</td>
 <td>$judoka->firstname</td>
 <td>$judoka->email</td>
@@ -566,7 +564,7 @@ STRING;
             $table = <<<STRING
         <div class="woocommerce-table-responsive">
 <table class="table table-striped table-hover">
-<tr>
+<tr style="background-color: black">
     <th>Nom</th>
     <th>Prénom</th>    
     <th>Email</th>    
@@ -577,7 +575,7 @@ STRING;
             foreach ($contacts as $contact) {
 
                 $table .= <<<STRING
-<tr>
+<tr style="background-color: black">
 <td>$contact->lastname</td>
 <td>$contact->firstname</td>
 <td>$contact->email</td>
@@ -606,6 +604,7 @@ STRING;
         $MassiliaJudo_Gender_Error = $MassiliaJudo_Status_Error = $MassiliaJudo_Firstname_Error = '';
         $MassiliaJudo_Lastname_Error = $MassiliaJudo_Email_Error = $MassiliaJudo_PhoneNumber_Error = '';
         $MassiliaJudo_Address_Error = $MassiliaJudo_City_Error = $MassiliaJudo_Cp_Error = '';
+
         if (isset($_POST['submit_edit_contact']) && isset($_POST['massiliajudo_editcontact'])) {
             if (wp_verify_nonce($_POST['massiliajudo_editcontact'], 'MassiliaJudo')) {
                 $errors = $this->chekDataContact($_POST);
@@ -788,7 +787,7 @@ STRING;
         $submit = MassiliaJudo_Form_Builder::buildSubmit(
             'submit_edit_contact',
             'MassiliaJudo_Submit',
-            'Enregistrez',
+            'Enregistrer',
             'woocommerce-Button button'
         );
 
@@ -857,7 +856,6 @@ STRING;
         if (isset($_POST['submit_edit_contact']) && isset($_POST['massiliajudo_editcontact'])) {
             if (wp_verify_nonce($_POST['massiliajudo_editcontact'], 'MassiliaJudo')) {
                 $errors = $this->chekDataContact($_POST);
-
                 if (empty($errors)) {
                     $datas = MassiliaJudo_Contact::formatDatasToDb($_POST);
 
@@ -903,14 +901,14 @@ HTML;
             $cancel = MassiliaJudo_Form_Builder::buildSubmit(
                 'cancel_del_contact',
                 'MassiliaJudo_Cancel_Del',
-                'Annulez',
+                'Annuler',
                 'woocommerce-Button button',
                 'onclick="javascript:history.back();"'
             );
             $submit = MassiliaJudo_Form_Builder::buildSubmit(
                 'submit_del_contact',
                 'MassiliaJudo_Submit_Del',
-                'Supprimez',
+                'Supprimer',
                 'woocommerce-Button button'
             );
             echo sprintf(
@@ -1040,7 +1038,7 @@ HTML;
      * @param $datas
      */
     public function sendEmail($datas){
-       echo '<pre>';var_dump($datas);echo '</pre>';exit;
+
         $recipients = ['arnaud@dollois', 'support@massilia-judo.fr'];
         $object = 'Nouvelle Inscription - 2017 / 2018';
 
