@@ -27,8 +27,8 @@ SQL;
     public static function getDojoById($id){
         global $wpdb;
         $sql =<<<SQL
-SELECT id, value
-FROM {$wpdb->prefix}massiliajudo_gender AS gr
+SELECT id, name
+FROM {$wpdb->prefix}massiliajudo_dojo AS gr
 WHERE gr.id = $id
 SQL;
         return $wpdb->get_row($sql);

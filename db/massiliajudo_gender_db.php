@@ -25,7 +25,7 @@ SQL;
     public static function getGenderById($id){
         global $wpdb;
         $sql =<<<SQL
-SELECT id, value
+SELECT id, name
 FROM {$wpdb->prefix}massiliajudo_gender AS gr
 WHERE gr.id = $id
 SQL;

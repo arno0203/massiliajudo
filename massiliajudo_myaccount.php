@@ -1046,9 +1046,9 @@ HTML;
         $header = array('From: '.$sender);
 
         $gender = MassiliaJudo_Gender_DB::getGenderById($datas['MassiliaJudo_Gender']);
-        $genderLibelle = $gender['value'];
+        $genderLibelle = $gender->value;
         $dojo = MassiliaJudo_Dojo_DB::getDojoById($datas['MassiliaJudo_Dojo']);
-        $dojoLibelle = $dojo['value'];
+        $dojoLibelle = $dojo->value;
 
         $lastName = $datas['MassiliaJudo_Lastname'];
         $firstName = $datas['MassiliaJudo_Firstname'];
@@ -1062,7 +1062,7 @@ Voici les informations saisies:
 
     Civilité: $genderLibelle
     Prénom: $firstName
-    Dollois: $lastName
+    Nom: $lastName
     Date de naissence: $birthdayDate
     Dojo: $dojoLibelle
 
