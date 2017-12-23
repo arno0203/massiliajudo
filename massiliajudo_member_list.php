@@ -39,7 +39,7 @@ class MassiliaJudo_Member_List extends WP_List_Table
         $sortable = $this->get_sortable_columns();
         $this->_column_headers = array($columns, $hidden, $sortable);
 
-//        $this->process_bulk_action();
+        $this->process_bulk_action();
 
         $data = $this->table_data();
         usort($data, array(&$this, 'sort_data'));
@@ -60,6 +60,9 @@ class MassiliaJudo_Member_List extends WP_List_Table
 
     public function process_action()
     {
+        echo '<pre>';
+        print_r('bbb');
+        echo '</pre>';exit;
         if (!isset($_REQUEST['post'])) {
             return;
         }
@@ -184,7 +187,7 @@ class MassiliaJudo_Member_List extends WP_List_Table
         $actions['edit'] = sprintf(
             '<a href="%1$s">%2$s</a>',
             esc_url(wp_nonce_url(add_query_arg($edit_query_args, 'admin.php'), 'editmember_'.$item['ID'])),
-            _x('Edit', 'List table row action', 'wp-list-table-example')
+            _x('Edit', 'List member row action', 'massiliajudo_member_list')
         );
         // Build delete row action.
         $delete_query_args = array(
@@ -195,7 +198,7 @@ class MassiliaJudo_Member_List extends WP_List_Table
         $actions['delete'] = sprintf(
             '<a href="%1$s">%2$s</a>',
             esc_url(wp_nonce_url(add_query_arg($delete_query_args, 'admin.php'), 'deletemember_'.$item['ID'])),
-            _x('Delete', 'List table row action', 'wp-list-table-example')
+            _x('Delete', 'List member row action', 'massiliajudo_member_list')
         );
 
         // Return the title contents.
@@ -428,23 +431,57 @@ class MassiliaJudo_Member_List extends WP_List_Table
             'delete' => 'Delete',
         );
 
-        return $actions;
     }
-
+    
     /**
      *
      */
     function process_bulk_action()
     {
-
-        if ('delete' === $this->current_action()) {
-            //  wp_die('Items deleted (or they would be if we had items to delete)!');
-            foreach ($_GET['id'] as $id) {
-                //$id will be a string containing the ID of the video
-                //i.e. $id = "123";
-                delete_this_video($id);
+        if ('edit' === $this->current_action()) {
+            $nonce = wp_unslash( $_REQUEST['_wpnonce'] );
+            // verify the nonce.
+            if ( ! wp_verify_nonce( $nonce, 'editmember_'.$_REQUEST['member'] ) ) {
+                $this->invalid_nonce_redirect();
             }
+            else {
+                echo '<pre>';
+                print_r($_GET);
+                echo '</pre>';
+                $this->edit_member( );
+                $this->graceful_exit();
+            }
+
         }
 
+    }
+
+    public function edit_member(){
+        include_once( 'views/edit_member.php' );
+    }
+    /**
+     * Stop execution and exit
+     *
+     * @since    1.0.0
+     * @return void
+     */
+    public function graceful_exit() {
+        exit;
+    }
+
+    /**
+     * Die when the nonce check fails.
+     *
+     * @since    1.0.0
+     * @return void
+     */
+    public function invalid_nonce_redirect() {
+        wp_die( __( 'Invalid Nonce', $this->plugin_text_domain ),
+            __( 'Error', $this->plugin_text_domain ),
+            array(
+                'response' 	=> 403,
+                'back_link' =>  esc_url( add_query_arg( array( 'page' => wp_unslash( $_REQUEST['page'] ) ) , admin_url( 'users.php' ) ) ),
+            )
+        );
     }
 }

@@ -17,16 +17,11 @@ class MassiliaJudo_Member
     {
         add_submenu_page(
             'massiliajudo'
-            ,
-            'Membres'
-            ,
-            'Membre'
-            ,
-            'manage_options'
-            ,
-            'massiliajudo_members'
-            ,
-            array($this, 'menu_html')
+            ,'Membres'
+            ,'Membre'
+            ,'manage_options'
+            ,'massiliajudo_members'
+            , array($this, 'menu_html')
         );
     }
 
@@ -43,4 +38,5 @@ class MassiliaJudo_Member
         </div>
         <?php
     }
+
 }
