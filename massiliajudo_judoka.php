@@ -16,12 +16,19 @@ class MassiliaJudo_Judoka
 
     public function add_admin_menu()
     {
-        add_submenu_page('massiliajudo'
-            , 'Judokas'
-            , 'Judokas'
-            , 'manage_options'
-            , 'massiliajudo_judokas'
-            , array($this, 'menu_html'));
+        add_submenu_page(
+            'massiliajudo'
+            ,
+            'Judokas'
+            ,
+            'Judokas'
+            ,
+            'manage_options'
+            ,
+            'massiliajudo_judokas'
+            ,
+            array($this, 'menu_html')
+        );
     }
 
     public function register_settings()
@@ -30,40 +37,71 @@ class MassiliaJudo_Judoka
         register_setting('massiliajudo_judokas_settings', 'massiliajudo_judokas_object');
         register_setting('massiliajudo_judokas_settings', 'massiliajudo_judokas_content');
 
-        add_settings_section('massiliajudo_judokas_section', 'Ajouter un judoka', array($this, 'section_html'), 'massiliajudo_judokas_settings');
-        add_settings_field('massiliajudo_judokas_sender', 'Expéditeur', array($this, 'sender_html'), 'massiliajudo_judokas_settings', 'massiliajudo_judokas_section');
-        add_settings_field('massiliajudo_judokas_object', 'Objet', array($this, 'object_html'), 'massiliajudo_judokas_settings', 'massiliajudo_judokas_section');
-        add_settings_field('massiliajudo_judokas_content', 'Contenu', array($this, 'content_html'), 'massiliajudo_judokas_settings', 'massiliajudo_judokas_section');
+        add_settings_section(
+            'massiliajudo_judokas_section',
+            'Ajouter un judoka',
+            array($this, 'section_html'),
+            'massiliajudo_judokas_settings'
+        );
+        add_settings_field(
+            'massiliajudo_judokas_sender',
+            'Expéditeur',
+            array($this, 'sender_html'),
+            'massiliajudo_judokas_settings',
+            'massiliajudo_judokas_section'
+        );
+        add_settings_field(
+            'massiliajudo_judokas_object',
+            'Objet',
+            array($this, 'object_html'),
+            'massiliajudo_judokas_settings',
+            'massiliajudo_judokas_section'
+        );
+        add_settings_field(
+            'massiliajudo_judokas_content',
+            'Contenu',
+            array($this, 'content_html'),
+            'massiliajudo_judokas_settings',
+            'massiliajudo_judokas_section'
+        );
     }
 
     public function sender_html()
-    {?>
-        <input type="text" name="massiliajudo_judokas_sender" value="<?php echo get_option('massiliajudo_judokas_sender') ?>"/>
-    <?php
+    {
+        ?>
+        <input type="text" name="massiliajudo_judokas_sender"
+               value="<?php echo get_option('massiliajudo_judokas_sender') ?>"/>
+        <?php
     }
 
     public function object_html()
-    {?>
-        <input type="text" name="massiliajudo_judokas_object" value="<?php echo get_option('massiliajudo_judokas_object') ?>"/>
-    <?php
+    {
+        ?>
+        <input type="text" name="massiliajudo_judokas_object"
+               value="<?php echo get_option('massiliajudo_judokas_object') ?>"/>
+        <?php
     }
 
     public function content_html()
-    {?>
-        <textarea name="massiliajudo_judokas_content"><?php echo get_option('massiliajudo_judokas_content')?></textarea>
-    <?php
+    {
+        ?>
+        <textarea name="massiliajudo_judokas_content"><?php echo get_option(
+                'massiliajudo_judokas_content'
+            ) ?></textarea>
+        <?php
     }
 
     public function menu_html()
-    {?>
-        <h1><?php echo get_admin_page_title()?></h1>
+    {
+        ?>
+        <h1><?php echo get_admin_page_title() ?></h1>
         <p>Liste des Judokas</p>
         <form method="post" action="options.php">
-            <?php settings_fields("massiliajudo_judokas_settings")?>
-            <?php do_settings_sections("massiliajudo_judokas_settings")?>
-            <?php submit_button()?>
+            <?php settings_fields("massiliajudo_judokas_settings") ?>
+            <?php do_settings_sections("massiliajudo_judokas_settings") ?>
+            <?php submit_button() ?>
         </form>
-    <?php
+        <?php
     }
 
     public static function install()
@@ -83,7 +121,7 @@ class MassiliaJudo_Judoka
         );
 
         $wpdb->query(
-                "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}massiliajudo_dojo (`id` INT AUTO_INCREMENT PRIMARY KEY
+            "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}massiliajudo_dojo (`id` INT AUTO_INCREMENT PRIMARY KEY
 , `name` VARCHAR(255) NOT NULL
 , `actif` SMALLINT(1) NOT NULL DEFAULT 1 
 , `order` SMALLINT(1) NULL );"
@@ -98,7 +136,7 @@ class MassiliaJudo_Judoka
 , `name` VARCHAR(255) NOT NULL );"
         );
         $wpdb->query(
-                "INSERT INTO {$wpdb->prefix}massiliajudo_gender (`name`) VALUES ('Masculin'), ('Feminin')"
+            "INSERT INTO {$wpdb->prefix}massiliajudo_gender (`name`) VALUES ('Masculin'), ('Feminin')"
         );
 
         $wpdb->query(
@@ -108,6 +146,35 @@ class MassiliaJudo_Judoka
         $wpdb->query(
             "INSERT INTO {$wpdb->prefix}massiliajudo_status (`name`) VALUES ('Mère'), ('Père'), ('Autre')"
         );
+        $wpdb->query(
+            "CREATE TABLE {$wpdb->prefix}massiliajudo_years (`id` INT PRIMARY KEY AUTO_INCREMENT, 
+`year` VARCHAR(50) NOT NULL,  `actif` INT DEFAULT 0);"
+        );
+        $wpdb->query(
+            "INSERT INTO {$wpdb->prefix}massiliajudo_years (`year`, `actif`) VALUES ('2017 - 2018', 1)");
+
+        $wpdb->query(
+            "CREATE TABLE {$wpdb->prefix}massiliajudo_categories(`id` INT PRIMARY KEY AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL, `dateMin` DATETIME  NULL,  `dateMax` DATETIME  NULL,`actif` INT DEFAULT 1 NOT NULL);");
+
+        $wpdb->query(
+            "INSERT INTO {$wpdb->prefix}massiliajudo_categories (`name`, `dateMin`, `dateMax`, `actif`) VALUES ('4 - 5 ans', '2013-09-01', '2012-08-31', 1), 
+('4 - 6 ans', '2013-09-01', '2011-08-31',1), ('5 - 6 ans','2012-09-01', '2011-08-31', 1), ('6 - 7 ans', '2011-09-01', '2010-08-31',1), ('7 - 8 ans', '2010-09-01', '2009-08-31',1), 
+('7 - 10 ans', '2010-09-01', '2007-08-31',1), ('9 - 13 ans', '2008-09-01', '2004-08-31',1), ('11 ans et plus', '2006-09-01', '1900-01-01' ,1), ('13 ans et plus', '2004-09-01', '1900-01-01' ,1);");
+
+        $wpdb->query(
+            "CREATE TABLE {$wpdb->prefix}massiliajudo_lessons(`id` INT PRIMARY KEY AUTO_INCREMENT,
+		  `categorieId` INT NOT NULL, `dojoId` INT NOT NULL,  `nbrPlaceMax` INT NOT NULL,  `nbrPlaceLeft` INT NOT NULL 0, `actif` INT NOT NULL)");
+
+        $wpdb->query(
+            "INSERT INTO {$wpdb->prefix}massiliajudo_lessons (`categorieId`, `dojoId`, `nbrPlaceMax`,  `nbrPlaceLeft`, `actif`) VALUES (3,1, 25, 25, 1), (4,1,25, 25, 1), (5,1, 25, 25,1), (7,1, 25, 25,1),
+(9,1, 25, 25,1), (1,2,25, 25,1), (3,2,20, 20, 1), (5,2,20, 20, 1), (7,2,25, 25, 1), (9,2,25, 25, 1), (2,3,25, 25, 1), (5,3,25, 25, 1), (7,3,25, 25, 1), (9,3,25, 25, 1), (1,4,25, 25, 1),
+ (3,4,25, 25, 1), (3,5,25, 25,1), (5,5,25, 25,1), (7,5,25, 25,1), (2, 6,25, 25, 1), (6,6,25, 25, 1), (8,6,25, 25,1);");
+
+        $wpdb->query(
+            "CREATE TABLE {$wpdb->prefix}massiliajudo_registration(`id` INT PRIMARY KEY AUTO_INCREMENT,
+		  `yearId` INT NOT NULL, `judokaId` INT NOT NULL, `lessonId` INT NOT NULL)");
+
 
     }
 
@@ -125,18 +192,22 @@ class MassiliaJudo_Judoka
      * @param $datas
      * @return array
      */
-    public static function formatDatasToDb($datas){
+    public static function formatDatasToDb($datas)
+    {
         $ret = [];
 
         $ret = array_merge($datas);
-        if(!empty($datas['MassiliaJudo_Firstname']) ){
+        if (!empty($datas['MassiliaJudo_Firstname'])) {
             $ret['MassiliaJudo_Firstname'] = ucwords($datas['MassiliaJudo_Firstname']);
         }
-        if(!empty($datas['MassiliaJudo_Lastname']) ){
-            $ret['MassiliaJudo_Lastname'] = mb_strtoupper(MassiliaJudo_Myaccount::wd_remove_accents($datas['MassiliaJudo_Lastname']));
+        if (!empty($datas['MassiliaJudo_Lastname'])) {
+            $ret['MassiliaJudo_Lastname'] = mb_strtoupper(
+                MassiliaJudo_Myaccount::wd_remove_accents($datas['MassiliaJudo_Lastname'])
+            );
         }
-        $date = DateTime::createFromFormat('d/m/Y',  $datas['MassiliaJudo_Birthday']);
+        $date = DateTime::createFromFormat('d/m/Y', $datas['MassiliaJudo_Birthday']);
         $ret['MassiliaJudo_Birthday'] = $date->format('Y-m-d');
+
         return $ret;
     }
 
@@ -145,7 +216,8 @@ class MassiliaJudo_Judoka
      * @param $data
      * @return mixed
      */
-    public static function formatDataToForm($data){
+    public static function formatDataToForm($data)
+    {
         $ret = clone $data;
         $date = new DateTime($ret->birthdayDate);
         $ret->birthdayDate = $date->format('d/m/Y');

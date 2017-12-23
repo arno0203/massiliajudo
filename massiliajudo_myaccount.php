@@ -359,12 +359,45 @@ class MassiliaJudo_Myaccount
                         $this->sendEmail($datas);
                     } else {
                         MassiliaJudo_Judoka_DB::updateJudoka($datas);
+                        $judoka_id = $_POST['MassiliaJudo_JudokaId'];
                     }
+                    $birthday = $_POST['MassiliaJudo_Birthday'];
+                    $dojoId = $_POST['MassiliaJudo_Dojo'];
+                    $this->manageResgistration($judoka_id, $birthday, $dojoId);
+
                     wp_redirect(get_permalink(get_option('woocommerce_myaccount_page_id')).'/judokas/');
                     exit;
                 }
             }
         }
+    }
+
+    /**
+     * @param $judokaId
+     */
+    private function manageResgistration($judokaId, $birthday, $dojoId){
+        $yearObj = MassiliaJudo_Year_DB::getActiveYear();
+
+        MassiliaJudo_Registration_DB::deleteRegistrationCurrentYear($judokaId, $yearObj->id);
+        $listLessons = MassiliaJudo_Lesson_DB::getListByDojoId($dojoId);
+        $birthdayDate = DateTime::createFromFormat('j/m/Y', $birthday);
+
+        foreach ($listLessons as $lesson){
+            $beginDate  = new DateTime($lesson->dateMin);
+            $endDate  = new DateTime($lesson->dateMax);
+
+            if($birthdayDate < $beginDate && $birthdayDate > $endDate){
+                $lessonId = $lesson->id;
+                $nbrNewPlace = $lesson->nbrPlaceLeft;
+                var_dump($lesson);
+            }
+        }
+        $datas = ['yearId' => $yearObj->id, 'lessonId' => $lessonId, 'judokaId' => $judokaId];
+
+        MassiliaJudo_Registration_DB::addRegistration($datas);
+        $nbrNewPlace = intval($nbrNewPlace)-1;
+
+        MassiliaJudo_Lesson_DB::updateNbrPlace($lessonId, $nbrNewPlace);
     }
 
     /**
@@ -480,7 +513,8 @@ HTML;
      */
     public function massilia_judokas_endpoint_content()
     {
-        $judokas = MassiliaJudo_Judoka_DB::getJudokasByUserId();
+        $current_user = wp_get_current_user();
+        $judokas = MassiliaJudo_Judoka_DB::getJudokasByUserId($current_user->ID);
 
         $nbrJudoka = count($judokas);
         if ($nbrJudoka == 0) {
@@ -521,7 +555,7 @@ STRING;
 <td>$judoka->firstname</td>
 <td>$judoka->email</td>
 <td>$judoka->dojo</td>
-<td> </td>
+<td>$judoka->year / $judoka->category</td>
 <td><a href="$this->massilia_myaccount_page_url/edit_judoka/$judoka->id">Modifier</a> | <a href="$this->massilia_myaccount_page_url/del_judoka/$judoka->id">Supprimer</a></td>
 </tr>
 STRING;
@@ -539,7 +573,8 @@ STRING;
      */
     public function massilia_contacts_endpoint_content()
     {
-        $contacts = MassiliaJudo_Contact_DB::getContactByUserId();
+        $current_user = wp_get_current_user();
+        $contacts = MassiliaJudo_Contact_DB::getContactByUserId($current_user->ID);
         $nbrContact = count($contacts);
         if ($nbrContact == 0) {
             $string = <<<STRING
@@ -1046,9 +1081,9 @@ HTML;
         $header = array('From: '.$sender);
 
         $gender = MassiliaJudo_Gender_DB::getGenderById($datas['MassiliaJudo_Gender']);
-        $genderLibelle = $gender->value;
+        $genderLibelle = $gender->name;
         $dojo = MassiliaJudo_Dojo_DB::getDojoById($datas['MassiliaJudo_Dojo']);
-        $dojoLibelle = $dojo->value;
+        $dojoLibelle = $dojo->name;
 
         $lastName = $datas['MassiliaJudo_Lastname'];
         $firstName = $datas['MassiliaJudo_Firstname'];

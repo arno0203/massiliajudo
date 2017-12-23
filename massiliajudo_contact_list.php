@@ -23,6 +23,9 @@ class MassiliaJudo_Contact_List extends WP_List_Table
         $hidden = $this->get_hidden_columns();
         $sortable = $this->get_sortable_columns();
         $data = $this->table_data();
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
         usort( $data, array( &$this, 'sort_data' ) );
         $perPage = 2;
         $currentPage = $this->get_pagenum();

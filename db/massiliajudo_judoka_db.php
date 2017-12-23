@@ -6,20 +6,23 @@ class MassiliaJudo_Judoka_DB
     /**
      * @return array|null|object
      */
-    public static function getJudokasByUserId()
+    public static function getJudokasByUserId($userId, $output_type= OBJECT)
     {
         global $wpdb;
-        $current_user = wp_get_current_user();
 
         $sql = <<<SQL
-SELECT ju.*, ge.name AS gender, do.name AS dojo
+SELECT ju.*, ge.name AS gender, do.name AS dojo, cat.name AS category, ye.year AS year
 FROM {$wpdb->prefix}massiliajudo_judoka AS ju
 INNER JOIN {$wpdb->prefix}massiliajudo_gender AS ge ON ge.id = ju.genderId
 INNER JOIN {$wpdb->prefix}massiliajudo_dojo AS do ON do.id = ju.dojoId
-WHERE ju.userId= $current_user->ID
+LEFT JOIN {$wpdb->prefix}massiliajudo_registration AS re ON re.judokaId = ju.id
+LEFT JOIN {$wpdb->prefix}massiliajudo_lessons AS le ON le.id = re.lessonId
+LEFT JOIN {$wpdb->prefix}massiliajudo_categories AS cat ON cat.id = le.categorieId
+LEFT JOIN {$wpdb->prefix}massiliajudo_years AS ye ON ye.id = re.yearId
+WHERE ju.userId= $userId
 AND ju.actif = 1
 SQL;
-        return $wpdb->get_results($sql);
+       return $wpdb->get_results($sql, $output_type);
 
     }
 

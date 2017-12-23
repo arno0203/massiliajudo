@@ -6,26 +6,25 @@ class MassiliaJudo_Contact_DB
     /**
      * @return array|null|object
      */
-    public static function getContactByUserId()
+    public static function getContactByUserId($userId, $output_type= OBJECT)
     {
         global $wpdb;
-        $current_user = wp_get_current_user();
 
         $sql = <<<SQL
 SELECT *
 FROM {$wpdb->prefix}massiliajudo_contact AS ju
-WHERE userId= $current_user->ID
+WHERE userId= $userId
 AND actif = 1
 SQL;
 
-        return $wpdb->get_results($sql);
+        return $wpdb->get_results($sql, $output_type);
 
     }
 
     /**
      * @return array|null|object
      */
-    public static function getContactsById($contactId = null)
+    public static function getContactsById($contactId = null, $output_type= OBJECT)
     {
         if (!is_null($contactId)) {
 
@@ -39,7 +38,7 @@ WHERE id= $contactId
 AND actif = 1
 SQL;
 
-            return $wpdb->get_row($sql);
+            return $wpdb->get_row($sql, $output_type);
         }
 
         return null;

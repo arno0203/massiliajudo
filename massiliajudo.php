@@ -13,8 +13,11 @@ class MassiliaJudo_Plugin{
 
     public function __construct()
     {
-        include_once plugin_dir_path( __FILE__ ).'/massiliajudo_judoka.php';
+        include_once plugin_dir_path( __FILE__ ).'/massiliajudo_member.php';
+        include_once plugin_dir_path( __FILE__ ).'/massiliajudo_member_list.php';
+        new MassiliaJudo_Member();
 
+        include_once plugin_dir_path( __FILE__ ).'/massiliajudo_judoka.php';
         new MassiliaJudo_Judoka();
         register_activation_hook(__FILE__, array('MassiliaJudo_Judoka', 'install'));
         register_uninstall_hook(__FILE__, array('MassiliaJudo_Judoka', 'uninstall'));
@@ -29,7 +32,9 @@ class MassiliaJudo_Plugin{
         include_once plugin_dir_path( __FILE__ ).'/massiliajudo_myaccount.php';
         new MassiliaJudo_Myaccount();
 
-        include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_judoka_db.php';
+        include_once plugin_dir_path( __FILE__ ).'db/massiliajudo_member_db.php';
+
+        include_once plugin_dir_path( __FILE__ ).'db/massiliajudo_judoka_db.php';
 
         include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_contact_db.php';
 
@@ -38,6 +43,12 @@ class MassiliaJudo_Plugin{
         include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_dojo_db.php';
 
         include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_status_db.php';
+
+        include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_lesson_db.php';
+
+        include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_year_db.php';
+
+        include_once plugin_dir_path( __FILE__ ).'/db/massiliajudo_registration_db.php';
 
         include_once plugin_dir_path( __FILE__ ).'/massiliajudo_form_builder.php';
         new MassiliaJudo_Form_Builder();
