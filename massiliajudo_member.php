@@ -30,11 +30,9 @@ class MassiliaJudo_Member
         echo '<p>Liste des Membres</p>';
 
         $exampleListTable = new MassiliaJudo_Member_List();
-        $exampleListTable->prepare_items();
-
-        ?>
+       ?>
         <div class="wrap">
-            <?php $exampleListTable->display(); ?>
+            <?php $exampleListTable->displayListMember(); ?>
         </div>
         <?php
     }

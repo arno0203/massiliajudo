@@ -33,6 +33,9 @@ class MassiliaJudo_Member_List extends WP_List_Table
      */
     public function prepare_items()
     {
+        // check if a search was performed.
+        $member_search_key = isset($_REQUEST['s']) ? wp_unslash(trim($_REQUEST['s'])) : '';
+
         $perPage = 10;
         $columns = $this->get_columns();
         $hidden = $this->get_hidden_columns();
@@ -42,6 +45,10 @@ class MassiliaJudo_Member_List extends WP_List_Table
         $this->process_bulk_action();
 
         $data = $this->table_data();
+        // filter the data in case of a search.
+        if ($member_search_key) {
+            $data = $this->filter_table_data($data, $member_search_key);
+        }
         usort($data, array(&$this, 'sort_data'));
 
         $totalItems = count($data);
@@ -55,14 +62,41 @@ class MassiliaJudo_Member_List extends WP_List_Table
                 'per_page' => $perPage,
             )
         );
+    }
+
+    /*
+	 * Filter the table data based on the user search key
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $table_data
+	 * @param string $search_key
+	 * @returns array
+	 */
+    public function filter_table_data($data, $search_key)
+    {
+        $filtered_table_data = array_values(
+            array_filter(
+                $data,
+                function ($row) use ($search_key) {
+                    foreach ($row as $row_val) {
+                        if (!is_array($row_val)) {
+                            if (stripos($row_val, $search_key) !== false) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            )
+        );
+
+        return $filtered_table_data;
 
     }
 
     public function process_action()
     {
-        echo '<pre>';
-        print_r('bbb');
-        echo '</pre>';exit;
+
         if (!isset($_REQUEST['post'])) {
             return;
         }
@@ -99,7 +133,8 @@ class MassiliaJudo_Member_List extends WP_List_Table
      *
      * @return Array
      */
-    public function get_columns()
+    public
+    function get_columns()
     {
         $columns = array(
             'cb' => '<input type="checkbox" />', // Render a checkbox instead of text.
@@ -120,9 +155,10 @@ class MassiliaJudo_Member_List extends WP_List_Table
      *
      * @return Array
      */
-    public function get_hidden_columns()
+    public
+    function get_hidden_columns()
     {
-        return array('ID','nicename', 'display_name', 'contacts_list', 'judokas_list');
+        return array('ID', 'nicename', 'display_name', 'contacts_list', 'judokas_list');
     }
 
     /**
@@ -130,7 +166,8 @@ class MassiliaJudo_Member_List extends WP_List_Table
      *
      * @return Array
      */
-    public function get_sortable_columns()
+    public
+    function get_sortable_columns()
     {
         return array(
             'billing_last_name' => array('billing_last_name', false)
@@ -142,15 +179,13 @@ class MassiliaJudo_Member_List extends WP_List_Table
     /**
      * Get value for checkbox column.
      *
-     * REQUIRED if displaying checkboxes or using bulk actions! The 'cb' column
-     * is given special treatment when columns are processed. It ALWAYS needs to
-     * have it's own method.
-     *
      * @param object $item A singular item (one full row's worth of data).
      * @return string Text to be placed inside the column <td>.
      */
-    protected function column_cb($item)
-    {
+    protected
+    function column_cb(
+        $item
+    ) {
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
             $this->_args['singular'],  // Let's simply repurpose the table's singular label ("movie").
@@ -161,22 +196,13 @@ class MassiliaJudo_Member_List extends WP_List_Table
     /**
      * Get title column value.
      *
-     * Recommended. This is a custom column method and is responsible for what
-     * is rendered in any column with a name/slug of 'title'. Every time the class
-     * needs to render a column, it first looks for a method named
-     * column_{$column_title} - if it exists, that method is run. If it doesn't
-     * exist, column_default() is called instead.
-     *
-     * This example also illustrates how to implement rollover actions. Actions
-     * should be an associative array formatted as 'slug'=>'link html' - and you
-     * will need to generate the URLs yourself. You could even ensure the links are
-     * secured with wp_nonce_url(), as an expected security measure.
-     *
      * @param object $item A singular item (one full row's worth of data).
      * @return string Text to be placed inside the column <td>.
      */
-    protected function column_login($item)
-    {
+    protected
+    function column_login(
+        $item
+    ) {
         $page = wp_unslash($_REQUEST['page']); // WPCS: Input var ok.
         // Build edit row action.
         $edit_query_args = array(
@@ -215,7 +241,8 @@ class MassiliaJudo_Member_List extends WP_List_Table
      *
      * @return Array
      */
-    private function table_data()
+    private
+    function table_data()
     {
         $data = array();
         $data = MassiliaJudo_Member_DB::getList();
@@ -254,8 +281,12 @@ class MassiliaJudo_Member_List extends WP_List_Table
      * @param $details
      * @return mixed
      */
-    public function buildDetails(&$data, $key, $details)
-    {
+    public
+    function buildDetails(
+        &$data,
+        $key,
+        $details
+    ) {
         if (!empty($details)) {
             foreach ($details as $detail) {
                 if ($detail['meta_key'] == 'billing_first_name') {
@@ -274,8 +305,12 @@ class MassiliaJudo_Member_List extends WP_List_Table
      * @param $key
      * @param $contacts
      */
-    public function buildContacts(&$data, $key, $contacts)
-    {
+    public
+    function buildContacts(
+        &$data,
+        $key,
+        $contacts
+    ) {
         $concat = '';
         if (!empty($contacts)) {
             foreach ($contacts as $contact) {
@@ -294,8 +329,12 @@ class MassiliaJudo_Member_List extends WP_List_Table
      * @param $key
      * @param $contacts
      */
-    public function buildJudokas(&$data, $key, $judokas)
-    {
+    public
+    function buildJudokas(
+        &$data,
+        $key,
+        $judokas
+    ) {
         $concat = '';
         if (!empty($judokas)) {
             foreach ($judokas as $judoka) {
@@ -317,8 +356,11 @@ class MassiliaJudo_Member_List extends WP_List_Table
      *
      * @return Mixed
      */
-    public function column_default($item, $column_name)
-    {
+    public
+    function column_default(
+        $item,
+        $column_name
+    ) {
         switch ($column_name) {
             case 'ID':
             case 'login':
@@ -362,8 +404,11 @@ class MassiliaJudo_Member_List extends WP_List_Table
      *
      * @return Mixed
      */
-    private function sort_data($a, $b)
-    {
+    private
+    function sort_data(
+        $a,
+        $b
+    ) {
 
         // Set defaults
         $orderby = 'ID';
@@ -390,8 +435,12 @@ class MassiliaJudo_Member_List extends WP_List_Table
      * @param $order
      * @return int
      */
-    private function compareInt($a, $b, $order)
-    {
+    private
+    function compareInt(
+        $a,
+        $b,
+        $order
+    ) {
         if ($a == $b) {
             return 0;
         }
@@ -411,8 +460,12 @@ class MassiliaJudo_Member_List extends WP_List_Table
      * @param $order
      * @return int
      */
-    private function compareString($a, $b, $order)
-    {
+    private
+    function compareString(
+        $a,
+        $b,
+        $order
+    ) {
         $result = strcmp(strtolower($a), strtolower($b));
 
         if ($order === 'asc') {
@@ -432,23 +485,19 @@ class MassiliaJudo_Member_List extends WP_List_Table
         );
 
     }
-    
+
     /**
      *
      */
     function process_bulk_action()
     {
         if ('edit' === $this->current_action()) {
-            $nonce = wp_unslash( $_REQUEST['_wpnonce'] );
+            $nonce = wp_unslash($_REQUEST['_wpnonce']);
             // verify the nonce.
-            if ( ! wp_verify_nonce( $nonce, 'editmember_'.$_REQUEST['member'] ) ) {
+            if (!wp_verify_nonce($nonce, 'editmember_'.$_REQUEST['member'])) {
                 $this->invalid_nonce_redirect();
-            }
-            else {
-                echo '<pre>';
-                print_r($_GET);
-                echo '</pre>';
-                $this->edit_member( );
+            } else {
+                $this->edit_member();
                 $this->graceful_exit();
             }
 
@@ -456,16 +505,21 @@ class MassiliaJudo_Member_List extends WP_List_Table
 
     }
 
-    public function edit_member(){
-        include_once( 'views/edit_member.php' );
+    public
+    function edit_member()
+    {
+        include_once('views/edit_member.php');
     }
+
     /**
      * Stop execution and exit
      *
      * @since    1.0.0
      * @return void
      */
-    public function graceful_exit() {
+    public
+    function graceful_exit()
+    {
         exit;
     }
 
@@ -475,13 +529,26 @@ class MassiliaJudo_Member_List extends WP_List_Table
      * @since    1.0.0
      * @return void
      */
-    public function invalid_nonce_redirect() {
-        wp_die( __( 'Invalid Nonce', $this->plugin_text_domain ),
-            __( 'Error', $this->plugin_text_domain ),
+    public
+    function invalid_nonce_redirect()
+    {
+        wp_die(
+            __('Invalid Nonce', $this->plugin_text_domain),
+            __('Error', $this->plugin_text_domain),
             array(
-                'response' 	=> 403,
-                'back_link' =>  esc_url( add_query_arg( array( 'page' => wp_unslash( $_REQUEST['page'] ) ) , admin_url( 'users.php' ) ) ),
+                'response' => 403,
+                'back_link' => esc_url(
+                    add_query_arg(array('page' => wp_unslash($_REQUEST['page'])), admin_url('users.php'))
+                ),
             )
         );
     }
+
+    public
+    function displayListMember()
+    {
+        $this->prepare_items();
+        include_once('views/list_member.php');
+    }
+
 }
