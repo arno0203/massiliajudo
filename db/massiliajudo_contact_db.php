@@ -11,8 +11,10 @@ class MassiliaJudo_Contact_DB
         global $wpdb;
 
         $sql = <<<SQL
-SELECT *
+SELECT ju.*, st.name AS status, ge.name AS gender
 FROM {$wpdb->prefix}massiliajudo_contact AS ju
+INNER JOIN {$wpdb->prefix}massiliajudo_status AS st ON st.id = ju.statusId
+INNER JOIN {$wpdb->prefix}massiliajudo_gender AS ge ON ge.id = ju.genderId
 WHERE userId= $userId
 AND actif = 1
 SQL;

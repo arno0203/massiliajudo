@@ -59,6 +59,7 @@ class MassiliaJudo_Plugin{
         //Ajax
         wp_localize_script( 'script_handle', 'MasssiliaJudoAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php')));
 
+
     }
 
     public function add_admin_menu()
